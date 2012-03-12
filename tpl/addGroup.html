@@ -1,0 +1,82 @@
+
+	
+	<h1>Groups management</h1>
+	
+	<!-- Vlad 08/03/2012 BEGIN -->
+	
+	<nav id="breadcrumbs">
+		<a href="#">Groups</a> &raquo; <a href="#">Add group</a>
+	</nav>
+	
+	<h2>Add new group</h2>
+	
+	<form>
+		<p>
+			<label for="addGroupName">Group name:</label><br />
+			<input type="text" name="addGroupName" id="addGroupName" style="width:50%" />
+		</p>
+
+		<p>
+			<label for="addGroupDescription">Group description:</label><br />
+			<textarea name="addGroupDescription" id="addGroupDescription" style="width:50%;height:500px;"></textarea>
+		</p>
+
+		<p>
+			<input type="submit" id="addGroupSubmit" value="Create group &raquo;" />
+		</p>
+	</form>
+	<!-- Vlad 08/03/2012 END -->
+
+<!-- Vlad 08/03/2012 BEGIN -->
+<div id="AI"><div>Please wait, loading...</div></div>
+<script type="text/javascript">
+$(window).load(function () 
+{
+	hideAI( );
+	$( '#addGroupName' ).focus( );
+
+	$("#addGroupSubmit").click( function( ) 
+	{
+		showAI( );
+		var params = { groupName : $( '#addGroupName' ).val( ).trim( ), groupDescription: $( '#addGroupDescription' ).val( ).trim( ) };
+		
+		if ( !params.groupName )  
+		{
+			hideAI( );
+			alert( "Group name is required." );
+			$( '#addGroupName' ).focus( );
+			return false;
+		}
+		
+		if ( !params.groupDescription )  
+		{
+			hideAI( );
+			alert( "Group description is required." );
+			$( '#addGroupDescription' ).focus( );
+			return false;
+		}
+		
+		$.ajax({
+		  type: "POST",
+		  url: 	"addGroupAjax",
+		  data: params }).done( 
+			  function( msg ) 
+				{
+					hideAI( );
+
+					if ( msg.toLowerCase( ) == "ok" ) 
+					{
+						alert( "The \""+ params.groupName +"\" group was successfully added!" );
+						$( '#addGroupName' ).val( '' );
+						$( '#addGroupDescription' ).val( '' );
+					}
+					else
+					{
+						alert( "Error: "+ msg );
+					}
+				});
+
+		return false;
+	});
+});
+</script>
