@@ -15,12 +15,17 @@ class GroupAdder(webapp.RequestHandler):
         TemplateMaker.make( self, "Add Groups", "addGroup" )
 		
 class GroupAdderAjax(webapp.RequestHandler):
-    def get(self):
-        self.post();
-		
     def post(self):
-        self.response.headers['Content-Type'] = 'text/plain'
-        self.response.out.write('ok')
+		from uccal.groups import create
+		self.response.headers['Content-Type'] = 'text/plain'
+
+		try :
+			groupName = self.request.get('groupName')
+			groupDescription = self.request.get('groupDescription')
+			create.createGroup(groupName, groupDescription)
+			self.response.out.write('ok')
+		except Exception as x:
+			self.response.out.write(x)
 		
 class GroupDeleter(webapp.RequestHandler):
     def get(self):

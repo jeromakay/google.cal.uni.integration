@@ -1,11 +1,12 @@
 import gdata.apps.groups.client
 import data
+import random
+import hashlib
 
-def createGroup (group_id, group_name, description='no description given', email_permission=None):
+def createGroup (group_name, description='no description given', email_permission=None):
 	"""Creates a Google Group
 
 		Args:
-			group_id: A unique ID to refer to the group
 			group_name: A name for the group
 			description: describes the group
 			email_permission: Email settings for the group. 
@@ -21,16 +22,14 @@ def createGroup (group_id, group_name, description='no description given', email
 	#the domain key eg. example.com
 	CONSUMER_KEY = data.CONSUMER_KEY
 
+	#TO BE REMOVED
+	#generate hashed id
+	group_id = hashlib.md5("group_name").hexdigest()
+	
 	#create client object
 	groupClient = gdata.apps.groups.client.GroupsProvisioningClient(domain=CONSUMER_KEY) 
 	#authorize client
 	groupClient.ClientLogin(email=user_full, password=password, source ='apps')
-	print groupClient
 
-	try :
-		#create the group and add it to the domain
-		groupClient.CreateGroup(group_id, group_name, description, email_permission)
-		print "Success!"
-		print group_name + " was added to " + CONSUMER_KEY + " with the ID " + group_id 
-	except Exception :
-		print "there was an error with your submission. \nMaybe a group with that ID already Exists?"
+	#create the group and add it to the domain
+	groupClient.CreateGroup(group_id, group_name, description, email_permission)
