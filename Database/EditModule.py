@@ -33,5 +33,4 @@ def EditModule(database,
     
     connect.commit()
     c.close()
-       
-    return 1
+

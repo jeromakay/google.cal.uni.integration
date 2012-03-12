@@ -23,13 +23,6 @@ def CreateModule(database,
     
     connect.commit()
     c.close
-    
-    #finds the id to output
-    c=connect.cursor
-    c.execute("""SELECT MAX group_id
-                FROM modules""")
-    
-    module_id = c.fetchone()[0]   
-    c.close
-    return module_id
+
+
 

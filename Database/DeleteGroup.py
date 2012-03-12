@@ -20,5 +20,5 @@ def DeleteGroup(database,
     connect.commit()
     c.close()
        
-    return 1
+
 

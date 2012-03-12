@@ -24,9 +24,5 @@ def CreateGroup(database,
     connect.commit() 
      
     #finds the id to output
-    c.execute("""SELECT MAX group_id
-                FROM groups""")    
-    group_id = c.fetchone()[0]   
     c.close()
-    return group_id
 

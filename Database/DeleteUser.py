@@ -19,6 +19,5 @@ def DeleteUser(database,
     
     connect.commit()
     c.close
-       
-    return 1
+
 
