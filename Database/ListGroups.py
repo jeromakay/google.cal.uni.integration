@@ -15,9 +15,7 @@ def ListGroups(database):
                 FROM groups""")
     
     json_return = []
-    i=0
-    rows=c.rowcount
-    
+    i=0    
     for row in c:
         json_return[i] = {"id": row[0],
             "title":row[1],

@@ -16,7 +16,6 @@ def ListGroups(database):
     
     json_return = []
     i=0
-    rows=c.rowcount
     
     for row in c:
         json_return[i] = {"gID": row[0],

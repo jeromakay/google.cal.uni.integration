@@ -3,7 +3,6 @@ Created on 12 Márta 2012
 
 @author: home
 '''
-import json
 import sqlite3 as sqlite
 #CREATES A GROUP, NAMED <group_Name, 'New_group' by default>, OF TYPE <type_id,
 # default whatever 0 is> WITH DESCRIPTION <description, 'Generic_group'by
