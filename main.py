@@ -24,7 +24,7 @@ class GroupAdderAjax(webapp.RequestHandler):
 			groupDescription = self.request.get('groupDescription')
 			create.createGroup(groupName, groupDescription)
 			self.response.out.write('ok')
-		except Exception as x:
+		except Exception, x:
 			self.response.out.write(x)
 		
 class GroupDeleter(webapp.RequestHandler):
