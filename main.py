@@ -1,6 +1,6 @@
 import cgi
 import os
-import TemplateMaker
+from tpl import TemplateMaker
 from google.appengine.api import users
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
@@ -18,34 +18,71 @@ class GroupAdderAjax(webapp.RequestHandler):
     def post(self):
 		from uccal.groups import create
 		self.response.headers['Content-Type'] = 'text/plain'
-
 		try :
 			groupName = self.request.get('groupName')
 			groupDescription = self.request.get('groupDescription')
 			create.createGroup(groupName, groupDescription)
 			self.response.out.write('ok')
-		except Exception, x:
-			self.response.out.write(x)
+		except Exception, e:
+			self.response.out.write(e)
 		
 class GroupDeleter(webapp.RequestHandler):
     def get(self):
 		TemplateMaker.make( self, "Delete Groups", "deleteGroup" )
 		
-class GroupDeleterAjax(webapp.RequestHandler):
-    def get(self):
-        self.post();
-		
+class DeleterAjax(webapp.RequestHandler):
     def post(self):
-        self.response.headers['Content-Type'] = 'text/plain'
-        self.response.out.write('ok')
+		from uccal import Deleters
+		self.response.headers['Content-Type'] = 'text/plain'
+		try :
+			entityID = self.request.get('entityID')
+			dataType = self.request.get('dataType')
+			Deleters.Delete(dataType, entityID)
+			self.response.out.write('ok')
+		except Exception, e:
+			self.response.out.write(e)
+			
+class GroupUpdater(webapp.RequestHandler):
+    def get(self):
+		TemplateMaker.make( self, "Update Groups", "updateGroup" )
+		
+class GroupUpdaterAjax(webapp.RequestHandler):
+    def post(self):
+		from uccal.groups import update
+		self.response.headers['Content-Type'] = 'text/plain'
+		try :
+			groupId = self.request.get('groupId')
+			#delete.deleteGroup(groupId)
+			self.response.out.write('ok')
+		except Exception, e:
+			self.response.out.write(e)
+
+class ModuleUpdater(webapp.RequestHandler):
+    def get(self):
+		TemplateMaker.make( self, "Add Modules", "addModule" )
+		
+class ModuleUpdaterAjax(webapp.RequestHandler):
+    def post(self):
+		from uccal.groups import update
+		self.response.headers['Content-Type'] = 'text/plain'
+		try :
+			#groupId = self.request.get('groupId')
+			#delete.deleteGroup(groupId)
+			self.response.out.write('ok')
+		except Exception, e:
+			self.response.out.write(x)
 	
 
 application = webapp.WSGIApplication(
                                      [('/', Main),
                                       ('/addGroupAjax', GroupAdderAjax),
                                       ('/addGroup', GroupAdder),
-									  ('/deleteGroupAjax', GroupDeleterAjax),
-                                      ('/deleteGroup', GroupDeleter)],									  
+									  ('/DeleterAjax', DeleterAjax),
+                                      ('/deleteGroup', GroupDeleter),
+									  ('/updateGroupAjax', GroupUpdaterAjax),
+                                      ('/updateGroup', GroupUpdater),
+									  ('/updateGroupAjax', ModuleUpdaterAjax),
+                                      ('/updateGroup', ModuleUpdater)],									  
                                      debug=True)
 
 def main():

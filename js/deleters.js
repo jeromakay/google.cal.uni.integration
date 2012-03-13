@@ -9,14 +9,14 @@ function deleteGroup( groupID, callbackOK )
 function deleteEntity( dataType, entityID, callbackOK ) 
 {
 	showAI( );
-			
-	var params = {entityID: entityID }
-
-	$.getJSON({
+	
+	var params = { dataType: dataType, entityID: entityID }
+	
+	$.ajax({
 	  type: "POST",
-	  url: 	"deleteGroup.py",
+	  url: 	"DeleterAjax",
 	  data: params }).done( 
-		  function( json ) 
+		  function( msg ) 
 			{
 				hideAI( );
 				

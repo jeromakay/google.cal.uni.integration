@@ -1,8 +1,18 @@
 import gdata.apps.groups.client
 import data
+import random
+import hashlib
+#from Database import EditGroup
 
-#---method to update a group---
-def updateGroup(group_id, group_name, description='no description given', email_permission=None):
+def updateGroup(group_id, new_group_name, new_description='no description given', new_type_id=1, new_email_permission=None):
+	"""Updates a google group with the given paramaters 
+	
+		Args:
+			group_name: A new name for the group
+			description: A new description for the group
+			type_id: The type of members of the group (eg student, staff) represented by an int (see database documentation)
+			email_permission: Email settings for the group.
+	"""
 
 	#---login details to use---
 	#user id eg abc1
@@ -19,13 +29,12 @@ def updateGroup(group_id, group_name, description='no description given', email_
 	#authorize client
 	groupClient.ClientLogin(email=user_full, password=password, source ='apps')
 	
-	newGroupDetail = gdata.apps.groups.data.GroupEntry(group_id, group_name, description)
+	#create a new group object to change with the old one.
+	#newGroupDetail = gdata.apps.groups.data.GroupEntry(group_id, new_group_name, new_description, new_type_id)
+		
+	#deal with database here
+	#EditGroup.EditGroup(database, group_id, new_group_name, new_description, new_group_type)
 	
-	try :
-		#change the group details
-		groupClient.UpdateGroup(group_id, newGroupDetail, description, email_permission)
-		print "Success!"
-		print group_id + " was updated" 
-	except Exception :
-		print "there was an error with your submission. \nMaybe the group does not exist?"
+	#change the group details
+	groupClient.UpdateGroup(group_id, newGroupDetail, description, email_permission)
 		

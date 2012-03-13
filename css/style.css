@@ -173,7 +173,7 @@ div#page p#sync_p input
 
 
 .button, .button:visited {
-	background: #91bd09 url(../images/button/overlay.png) repeat-x; 
+	background: #298A08 url(../images/button/overlay.png) repeat-x; 
 	display: inline-block; 
 	color: #fff; 
 	text-decoration: none;
@@ -189,6 +189,20 @@ div#page p#sync_p input
 	padding: 8px 14px 9px;
 	z-index: 2;
 }
+
+.largeButton {
+	font-size: 24px;
+}
+
+.redButton {
+	background-color: #b43104;
+}
  
-.button:hover { background-color: #298A08; color: #fff; }
+.button:hover { background-color: #91bd09; color: #fff; }
+
+.redButton:hover { background-color: #F78181; }
+
 .button:active { top: 1px; }
+
+
+.largeButton
