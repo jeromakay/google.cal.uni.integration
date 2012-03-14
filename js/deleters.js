@@ -3,6 +3,12 @@ function deleteGroup( groupID, callbackOK )
 	deleteEntity( "group", groupID, callbackOK )
 }
 
+function deleteModule( moduleID, callbackOK )
+{
+	deleteEntity( "module", moduleID, callbackOK )
+}
+
+
 /**
  * @param dataType The type of data to delete: groups, modules, users
  */
@@ -14,7 +20,7 @@ function deleteEntity( dataType, entityID, callbackOK )
 	
 	$.ajax({
 	  type: "POST",
-	  url: 	"DeleterAjax",
+	  url: 	"/DeleterAjax",
 	  data: params }).done( 
 		  function( msg ) 
 			{
