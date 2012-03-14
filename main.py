@@ -67,10 +67,10 @@ class GroupUpdaterAjax(webapp.RequestHandler):
 			self.response.out.write('ok')
 		except Exception, e:
 			self.response.out.write(e)
-		
-class ModuleUpdaterAjax(webapp.RequestHandler):
+
+class GroupManagerAjax(webapp.RequestHandler):
     def post(self):
-		from uccal.groups import update
+		#from uccal.groups import update
 		self.response.headers['Content-Type'] = 'text/plain'
 		try :
 			#groupId = self.request.get('groupId')
@@ -78,10 +78,10 @@ class ModuleUpdaterAjax(webapp.RequestHandler):
 			self.response.out.write('ok')
 		except Exception, e:
 			self.response.out.write(e)
-
-class GroupManagerAjax(webapp.RequestHandler):
+		
+class ModuleUpdaterAjax(webapp.RequestHandler):
     def post(self):
-		from uccal.groups import update
+		#from uccal.groups import update
 		self.response.headers['Content-Type'] = 'text/plain'
 		try :
 			#groupId = self.request.get('groupId')
@@ -105,7 +105,7 @@ application = webapp.WSGIApplication(
                                       ('/addGroupAjax', GroupAdderAjax),
 									  ('/DeleterAjax', DeleterAjax),
 									  ('/updateGroupAjax', GroupUpdaterAjax),
-                                      ('/addGroupAjax', GroupManagerAjax),
+                                      ('/groupManagerAjax', GroupManagerAjax),
 									  ('/updateGroupAjax', ModuleUpdaterAjax)],									  
                                      debug=True)
 
