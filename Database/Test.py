@@ -4,7 +4,7 @@ Created on 12 M�rta 2012
 '''
 import unittest
 import sqlite3
-from Database import Methods
+from Database import DB
 class Test(unittest.TestCase):
 
 
@@ -85,89 +85,86 @@ class Test(unittest.TestCase):
         if len(c.fetchall())<=0:
             conn = self.makeTable(conn)
         print("Creating 2 groups")
-        Methods.CreateGroup(conn,1, "CS1101-A", "Intro to Being a DataBase, lab 1",  1)
-        Methods.CreateGroup(conn,2, "CS1101-B", "Intro to Being a DataBase, lab 2", 1)
+        DB.CreateGroup(conn,1, "CS1101-A", "Intro to Being a DataBase, lab 1",  1)
+        DB.CreateGroup(conn,2, "CS1101-B", "Intro to Being a DataBase, lab 2", 1)
         
         print("Making a module for the 2 groups to parent")
-        Methods.CreateModule(conn, 1, "CS1101", "Intro to Being a DataBase")
+        DB.CreateModule(conn, 1, "CS1101", "Intro to Being a DataBase")
         
         print("Making 3 students to take the module")
-        Methods.CreateUser(conn, 11, 1, "Tom Jones")
-        Methods.CreateUser(conn, 12, 2, "John Doe")
-        Methods.CreateUser(conn, 13, 3, "Some Guy")
+        DB.CreateUser(conn, 11, 1, "Tom Jones")
+        DB.CreateUser(conn, 12, 2, "John Doe")
+        DB.CreateUser(conn, 13, 3, "Some Guy")
         
         print("Making the 2 groups part of the module")
-        Methods.AddModToGroup(conn, 1, 1)
-        Methods.AddModToGroup(conn, 2, 1)
+        DB.AddModToGroup(conn, 1, 1)
+        DB.AddModToGroup(conn, 2, 1)
         
         print("Adding 2 users to one group, 1 user to the other")
-        Methods.AddUserToGroup(conn, 1, 11)
-        Methods.AddUserToGroup(conn, 1, 12)
-        Methods.AddUserToGroup(conn, 2, 13)
+        DB.AddUserToGroup(conn, 1, 11)
+        DB.AddUserToGroup(conn, 1, 12)
+        DB.AddUserToGroup(conn, 2, 13)
         print("Dumping the list of students:")
-        print(Methods.ListUsers(conn))
+        print(DB.ListUsers(conn))
         
         print("Dumping the groups")
-        print(Methods.ListGroups(conn))
+        print(DB.ListGroups(conn))
         
         print("Dumping the modules")
-        print(Methods.ListModules(conn))
+        print(DB.ListModules(conn))
         
         print("dumping the students in group 1")
-        print(Methods.ListGroupedUsers(conn,1))
+        print(DB.ListGroupedUsers(conn,1))
         
         print("dumping the groups in the module")
-        print(Methods.ListModuleGroups(conn,1))
+        print(DB.ListModuleGroups(conn,1))
         
         print("Dumping the groups the third guy is in")
-        print(Methods.ListUsersGroups(conn,13))
+        print(DB.ListUsersGroups(conn,13))
         
         print("Changing the module's title to 'cs1102'")
-        Methods.EditModule(conn, 1, title='CS1102')
+        DB.EditModule(conn, 1, title='CS1102')
         
         print("Listing the modules to see if it worked")
-        print(Methods.ListModules(conn))
+        print(DB.ListModules(conn))
         
         print("Changing the groups' titles to 'cs1102' to match")
-        Methods.EditGroup(conn, 1, title='CS1102-A')
-        Methods.EditGroup(conn, 2, title='CS1102-B')
+        DB.EditGroup(conn, 1, title='CS1102-A')
+        DB.EditGroup(conn, 2, title='CS1102-B')
         
         print("Listing the groups to see if it worked")
-        print(Methods.ListGroups(conn))
+        print(DB.ListGroups(conn))
         
         print("Swtiching them back")
-        Methods.EditModule(conn, 1, title='CS1101')
-        Methods.EditGroup(conn, 1, title='CS1101-A')
-        Methods.EditGroup(conn, 2, title='CS1101-B')
+        DB.EditModule(conn, 1, title='CS1101')
+        DB.EditGroup(conn, 1, title='CS1101-A')
+        DB.EditGroup(conn, 2, title='CS1101-B')
         
         print("Verification of it working")
-        print(Methods.ListModules(conn))
-        print(Methods.ListGroups(conn))
+        print(DB.ListModules(conn))
+        print(DB.ListGroups(conn))
         
         print("Woops, some guy dropped out")
-        Methods.RemoveUserFromGroup(conn,13,2)
-        Methods.DeleteUser(conn,13)
+        DB.RemoveUserFromGroup(conn,13,2)
+        DB.DeleteUser(conn,13)
         print("This makes the second group empty and redundant")
-        Methods.RemoveModFromGroup(conn,1,2)
-        Methods.DeleteGroup(conn,2)
+        DB.RemoveModFromGroup(conn,1,2)
+        DB.DeleteGroup(conn,2)
         
         print("As a result, here are the groups and students")
-        print(Methods.ListGroups(conn))
-        print(Methods.ListUsers(conn))
+        print(DB.ListGroups(conn))
+        print(DB.ListUsers(conn))
         
         print("The uni has stopped offering cs1101, and as a result its only 2 students left have dropped out")
-        Methods.DeleteModule(conn,1)
-        Methods.RemoveModFromGroup(conn,1,1)
-        Methods.RemoveUserFromGroup(conn,11,1)
-        Methods.RemoveUserFromGroup(conn,12,1)
-        Methods.DeleteUser(conn,11)
-        Methods.DeleteUser(conn,12)
-        Methods.DeleteGroup(conn,1)
+        DB.DeleteModule(conn,1)
+        DB.DeleteUser(conn,11)
+        DB.DeleteUser(conn,12)
+        DB.DeleteGroup(conn,1)
         
         print("Here is the resulting modules, groups and users; if you can see anything it's bad")
-        Methods.ListModules(conn)
-        Methods.ListGroups(conn)
-        Methods.ListUsers(conn)
+        DB.ListModules(conn)
+        DB.ListGroups(conn)
+        DB.ListUsers(conn)
         
         pass
 
