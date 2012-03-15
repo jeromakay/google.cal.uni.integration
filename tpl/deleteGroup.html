@@ -1,64 +1,130 @@
-	<h1>Delete groups</h1>
-	
-	<!-- Vlad 08/03/2012 BEGIN -->
-	
-	<nav id="breadcrumbs">
+<h1>Groups management</h1>
+<nav id="breadcrumbs">
+
 		<a href="#">Groups</a> &raquo; <a href="#">Delete groups</a>
+
 	</nav>
+
 	
+
 	<h2>Delete groups</h2>
+
 	
+
 	<dl class="dropdown" id="groups-list-drop-down">
+
 		<dt><a href="#" style="width:300px;"><span>Please select a group</span></a></dt>
+
 		<dd>
+
 			<ul id="groups-list">
+
 			</ul>
+
 		</dd>
+
 	</dl>
+
 	
+
 	<p id="deleteGroupHolder" style="display:none;"><a class="redButton button" id="buttonDeleteGroup">Delete Group &raquo;</a></p>
+
 	<!-- Vlad 08/03/2012 END -->
+
 		
+
 <!-- Vlad 08/03/2012 BEGIN -->
+
 <div id="AI"><div>Please wait, loading...</div></div>
+
 <script type="text/javascript" src="js/fetchers.js"></script>
+
 <script type="text/javascript" src="js/deleters.js"></script>
+
 <script type="text/javascript">
+
 $(window).load(function () 
+
 {
+
 	hideAI( );
-	fetchGroups( function( rowsArray ) {
-	
+
+	fetchGroups( function( json ) 
+
+	{
+
+		var rowsArray = json.results;
+
+
+
 		if ( rowsArray.length > 0 )
+
 		{
+
 			$.each( rowsArray, function( i, v )
+
 			{
+
 				var el = $('<li id="group_item_'+ v.id +'"><a href="#" id="group_id_'+ v.id +'">'+ v.title +'<span class="value">'+ v.id +'</span></a></li>');
+
 				el.appendTo( "#groups-list" );
+
 			});
 
-			initDropDowns( function( ){
-				$( "#deleteGroupHolder" ).show( );
-			});
-		}
-		
-		hideAI( );
-		
-		$("#buttonDeleteGroup").click( function( ) 
-		{
-			if (confirm( "Please keep in mind that your action cannot be reversed, and all the references for the users tied to this group will be removed.\n\nAre you sure you want to remove this group at an application wide level (including Google Apps)?" ) )
+
+
+			initDropDowns( "groups-list-drop-down", function( )
+
 			{
-				var groupID = $( "#groups-list-drop-down" ).find("dt a span.value").html();
-				deleteGroup( groupID, function( ) {
-					$( '#group_item_'+ groupID ).remove( );
-					alert( "The selected group was successfully removed!" );
-				});
-			}
-		});
+
+				$( "#deleteGroupHolder" ).show( );
+
+			});
+
+		}
+
+
+
+		hideAI( );
+
 		
+
+		$("#buttonDeleteGroup").click( function( ) 
+
+		{
+
+			if (confirm( "Please keep in mind that your action cannot be reversed, and all the references for the users tied to this group will be removed.\n\nAre you sure you want to remove this group at an application wide level (including Google Apps)?" ) )
+
+			{
+
+				var groupID = $( "#groups-list-drop-down" ).find("dt a span.value").html( );
+
+				
+
+				deleteGroup( groupID, function( ) 
+
+				{
+
+					$( '#group_item_'+ groupID ).remove( );
+
+					alert( "The selected group was successfully removed!" );				
+
+				});
+
+			}
+
+		});
+
+		
+
 	}, function( ) {
+
 		alert( "no groups, callback!" );
+
 	});
+
 });
+
 </script>
+
 <!-- Vlad 08/03/2012 END -->
