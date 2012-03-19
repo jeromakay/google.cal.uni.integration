@@ -6,34 +6,36 @@ Created on 12 M�rta 2012
 @author: home
 '''
 import json
-import time
-def CreateGroup(connect, gid,
-                 group_Name="Default Group",
-                 description="A normal group",
-                
-                 type_id=0):
+import datetime
+from Datastores import  Module,User,Group,GroupType
+from google.appengine.ext import db
+
+
+#import google.appengine.api.datastore.Entity;
+#import google.appengine.api.datastore.Query;
+
+def CreateGroup(gid,
+                 group_Name,
+                 desc,
+                 type_id):
     
         """Creates a group
         inputs:
-        --group_name - the name of the group; "Default Group" by default
-        --description - a brief summary of the new group; "A normal group" by default
         --gid - the google ID of the group
-        type_id - the type of group it is; 0 by default
+        --group_name - the name of the group
+        --description - a brief summary of the new group
+        type_id - the type of group it is
         """
+        e = Group(group_gid=gid,
+                  title=group_Name,
+                  description=desc)
+        e.mod_dt = datetime.datetime.now().date()
         
+        e.group_type=GroupType.gql("WHERE title=:1",type_id).get()
         
-        #creates the group in the database
-        c=connect.cursor()
-        t=(group_Name,gid,description,type_id,getDate())
-        c.execute("""insert into groups(title,groups_gid,description,group_type_id,mod_dt)
-              values (?,?,?,?,?)""",t)
-        
-        connect.commit() 
-         
-        #finds the id to output
-        c.close()
+        e.put()
 
-def AddModToGroup(connect,
+def AddModToGroup(
                  group_id,
                  module_id):
         """Adds a specified module to a group (or vice-versa)
@@ -43,17 +45,15 @@ def AddModToGroup(connect,
         """
         
         
-        #creates the group in the database
-        c=connect.cursor()
-        t=(group_id,module_id,getDate())
-        c.execute("""insert into timetables(group_id,module_id,mod_dt)
-              values (?,?,?)""",t)
+        e=Group.gql("WHERE title=:1",group_id).get()
+        f=Module.gql("WHERE title=:1",module_id).get()
         
-        connect.commit() 
-         
-        c.close()
+        if f.key() not in e.group_modules:
+            e.group_modules.append(f.key())
+            e.put()
         
-def AddUserToGroup(connect,
+
+def AddUserToGroup(
                  group_id,
                  user_id):
         """Adds a specified user to a group
@@ -62,22 +62,17 @@ def AddUserToGroup(connect,
         --user_id - the user's google account identifier
         """
         
-        #creates the group in the database
-        c=connect.cursor()
-        t=(group_id,user_id,getDate())
-        c.execute("""insert into grouped_users(group_id,gID,mod_dt)
-              values (?,?,?)""",t)
+        e=Group.gql("WHERE title=:1",group_id).get()
+        f=User.gql("WHERE title=:1",user_id).get()
         
-        connect.commit() 
-         
-        c.close()
+        if e.key() not in f.user_groups:
+            f.user_groups.append(e.key())
+            f.put()
         
         
-def CreateModule(connect,
-                 cal_id,
-                 title="New_Module",
-                 desc="Generic_Module"
-                 ):
+def CreateModule(cal_id,
+                 name,
+                 desc):
         """Creates a module
         inputs:
         --title - the name of the module; "Default Module" by default
@@ -87,16 +82,14 @@ def CreateModule(connect,
         
         
         #creates the module in the database
-        c=connect.cursor()
-        t=(cal_id,title,desc,getDate())
-        c.execute("""insert into modules(google_cal_id,title,description,mod_dt)
-              values (?,?,?,?)""",t)
+        e=Module(title=name,
+                 description=desc,
+                 google_cal_id=cal_id)
+        e.mod_dt=datetime.datetime.now().date()
         
-        connect.commit()
-        c.close
+        e.put()
 
-def CreateUser(connect,
-                 gid,
+def CreateUser(  gid,
                  uid,
                  name):
     
@@ -106,61 +99,32 @@ def CreateUser(connect,
         --uid - the Uni ID of the user
         --name - the user's name
         """
-        
-        
-        #creates the group in the database
-        c=connect.cursor()
-        t=(gid,uid,name,getDate())
-        c.execute("""insert into users(gID,UID,name,mod_dt)
-              values (?,?,?,?)""",t)
-        
-        connect.commit() 
-         
-        #finds the id to output
-        c.close()
+        e=User(gID=gid,uID=uid,name=name)
+        e.mod_dt=datetime.datetime.now().date()
+        e.put()
 
-def DeleteGroup(connect,
-                 group_id
+def DeleteGroup(group_name
                  ):
         """Deletes a group
         inputs:
         --group_id - the ID of the group to delete
         """
-        
-        c=connect.cursor()
-        t=group_id,
-        c.execute("""DELETE FROM timetables
-                            WHERE group_id=?""",t)
-        c.execute("""DELETE FROM grouped_users
-                            WHERE group_id=?""",t)
-        c.execute("""DELETE FROM groups
-                            WHERE group_id=?""",t)
-        
-        connect.commit()
-        c.close()
+        e=Group.gql("WHERE title=:1",group_name).get()
+        db.delete(e)
        
-def DeleteModule(connect,
-                 module_id
+       
+def DeleteModule(module_name
                  ):
         """Deletes a module
         inputs:
         --group_id - the ID of the module to delete
         """
+        e=Module.gql("WHERE title=:1",module_name).get()
+        db.delete(e)
         
-        c=connect.cursor()
-        #finds the group identifier, precedence given to id
-        t=module_id,
-        c.execute("""DELETE FROM timetables
-                            WHERE module_id=?""",t)
-        c.execute("""DELETE FROM modules
-                            WHERE module_id=?""",t)
-        
-        connect.commit()
-        c.close()
 
 
-def DeleteUser(connect,
-                 user_id
+def DeleteUser(user_name
                  ):
     
         """Deletes a user
@@ -168,23 +132,14 @@ def DeleteUser(connect,
         --group_id - the ID of the user to delete
         """
         
-        c=connect.cursor()
-        t=user_id,
-        #finds the group identifier, precedence given to id
-        c.execute("""DELETE FROM grouped_users
-                            WHERE gID=?""",t)
-        c.execute("""DELETE FROM users
-                            WHERE gID=?""",t)
-        
-        connect.commit()
-        c.close
+        e=User.gql("WHERE title=:1",user_name).get()
+        db.delete(e)
 
 
-def EditGroup(connect,
-                 group_id,
-                 title=None,
-                 description=None,
-                 group_type=None
+def EditGroup(name,
+              newName=None,
+              newDesc=None,
+              newType=None
                  ):
     
         """Edits a group specified by the ID
@@ -194,33 +149,21 @@ def EditGroup(connect,
         --description - if changed, the new description of the group
         --group_type - if changed, the new type of the group
         """
+        e=Group.gql("WHERE title=:1",name).get()
+        if newName is not None:
+            e.title=newName
+        if newDesc is not None:
+            e.description=newDesc
+        if newType is not None:
+            e.group_type=GroupType.gql("WHERE title=:1",newType).get()      
+        e.mod_dt=datetime.datetime.now().date()
         
-        c=connect.cursor()
-        #finds the group to be modified
-        t=group_id,
-        c.execute("""SELECT title,description,group_type_id
-                    FROM groups
-                    WHERE group_id=?""",t)
-        
-        for row in c:
-            if title is None:
-                title=row[0]
-            if description is None:
-                description=row[1]
-            if group_type is None:
-                group_type=row[2]
-        t=(title,description,group_type,getDate(),group_id)
-        c.execute("""UPDATE groups
-                    SET title=?,description=?,group_type_id=?,mod_dt=?
-                    WHERE group_id=?""",t)
-        
-        connect.commit()
-        c.close()
+        e.put()
 
-def EditModule(connect,
-                 module_id,
-                 title=None,
-                 description=None,
+def EditModule(name,
+               newName=None,
+               newDesc=None,
+               newCal=None
                  ):
         """Edits a module specified by the ID
         inputs:
@@ -228,230 +171,141 @@ def EditModule(connect,
         --title - if changed, the new title of the module
         --description - if changed, the new description of the module
         """
-        c=connect.cursor()
-        #finds the group to be modified
-        t=module_id,
-        c.execute("""SELECT title,description
-                    FROM modules
-                    WHERE module_id=?""",t)
+        e=Module.gql("WHERE title=:1",name).get()
+        if newName is not None:
+            e.title=newName
+        if newDesc is not None:
+            e.description=newDesc
+        if newCal is not None:
+            e.google_cal_id=newCal     
+        e.mod_dt=datetime.datetime.now().date()
         
-        for row in c:
-            if title is None:
-                title=row[0]
-            if description is None:
-                description=row[1]
-           
-        t=(title,description,getDate(),module_id)
-        c.execute("""UPDATE modules
-                    SET title=?,description=?,mod_dt=?
-                    WHERE module_id=?""",t)
-        
-        connect.commit()
-        c.close()
+        e.put()
 
-def ListGroupedUsers(connect,group_id):
+def ListGroupedUsers(group_name):
         """Lists the users in a group
         inputs:
         --group_id - the ID of the group to show    
         """
-        c=connect.cursor()
-        t=group_id,
-        c.execute("""SELECT users.gID,users.name
-                    FROM grouped_users,users
-                    WHERE group_id=?
-                        AND users.gID=grouped_users.gID""",t)
-        
+       
+        the_group=Group.gql("WHERE title=:1",group_name ).get()
+        Users=the_group.users()
         json_return=[]
-        i=0
-        for row in c:
-            json_return.append({"gID":row[0],
-                            "name":row[1]})
-            ++i
-          
-        c.close()
+        for person in Users:
+            if the_group in person.users_groups:
+                json_return.append({"name":person.name,
+                                    "gid":person.gID,
+                                    "uid":person.uID})
         json.dumps(json_return)
-            
         return json_return
+            
 
-def ListGroups(connect):
+def ListGroups():
         """Lists the groups on file
         """
-        c=connect.cursor()
-        
-        c.execute("""SELECT group_id, title,description,group_type_id,mod_dt,groups_gid
-                    FROM groups""")
-        
+       
         json_return = []
-        i=0    
-        for row in c:
-            json_return.append({"id": row[0],
-                "title":row[1],
-            "description":row[2],
-            "type_id":row[3],
-            "mod_dt":row[4],
-            "group_gid":row[5]})
-            ++i
-        c.close()
-    
+        Groups=Group.gql("")    
+        for group in Groups:
+            json_return.append({"name":group.title,
+                                "desc":group.description,
+                                "gid":group.group_gid,
+                                "type":group.group_type})
         json.dumps(json_return)
             
         return json_return
     
-def ListGroupTypes(connect):
+def ListGroupTypes():
         """Lists the types of groups on file
         """
-        c=connect.cursor()
-        
-        c.execute("""SELECT group_type_id, title,description
-                    FROM group_types""")
-        
         json_return = []
-        i=0    
-        for row in c:
-            json_return.append({"id": row[0],
-                "title":row[1],
-            "description":row[2]})
-            ++i
-        c.close()
-    
+        GroupTypes=GroupType.gql("")    
+        for grouptype in GroupTypes:
+            json_return.append({"name":grouptype.title,
+                                "desc":grouptype.description})
         json.dumps(json_return)
             
         return json_return
     
-def ListModuleGroups(connect,module_id):
+def ListModuleGroups(module_name):
         """Lists the groups attatched to a module
         inputs:
         --module_id - the ID of the module to show    
         """
-        c=connect.cursor()
-        t=module_id,
-        c.execute("""SELECT groups.group_id, groups.title,groups.description,groups.group_type_id,groups.mod_dt,
-                            groups.groups_gid
-                    FROM timetables,groups
-                    WHERE timetables.module_id=?
-                        AND timetables.group_id=groups.group_id""",t)
-        
-        json_return = []
-        i=0
-        
-        for row in c:
-            json_return.append({"id": row[0],
-                "title":row[1],
-            "description":row[2],
-            "type_id":row[3],
-            "mod_dt":row[4],
-            "group_gid":row[5]})
-            ++i
-        c.close()
-    
+        the_module=Module.gql("WHERE title=:1",module_name ).get()
+        Groups=the_module.groups()
+        json_return=[]
+        for group in Groups:
+                json_return.append({"name":group.title,
+                                "desc":group.description,
+                                "gid":group.group_gid,
+                                "type":group.group_type})
         json.dumps(json_return)
-            
         return json_return
     
-def ListModules(connect):
+def ListModules():
         """Lists the modules on file
         """
         
-        c=connect.cursor()
-        
-        c.execute("""SELECT module_id,google_cal_id,title,description,mod_dt
-                    FROM modules""")
-        
         json_return = []
-        i=0
-        
-        for row in c:
-            json_return.append({"id": row[0],
-                "cal_id":row[1],
-            "title":row[2],
-            "description":row[3],
-            "mod_dt":row[4]})
-            ++i
-        c.close
-    
+        Modules=Module.gql("")    
+        for module in Modules:
+            json_return.append({"name":module.title,
+                                "desc":module.description,
+                                "cal_id":module.google_cal_id})
         json.dumps(json_return)
             
         return json_return
 
     
-def ListUsers(connect):
+def ListUsers():
         """Lists the users on file
         """
-        c=connect.cursor()
-        
-        c.execute("""SELECT gID, UID,name,mod_dt
-                    FROM users""")
-        
-        json_return = []
-        i=0
-        
-        for row in c:
-            json_return.append({"gID": row[0],
-                "UID":row[1],
-            "name":row[2],
-            "mod_dt":row[3]})
-            ++i
-        c.close()
-    
+        Users=User.gql("")
+        json_return=[]
+        for user in Users:
+            json_return.append({"name":user.name,
+                                "gid":user.gID,
+                                "uid":user.uID})
         json.dumps(json_return)
-            
         return json_return
     
-def ListUsersGroups(connect,user_id):
+def ListUsersGroups(user_name):
         """Lists the groups a user is in
         inputs:
         --user_id - the ID of the user to show    
         """
-        c=connect.cursor()
-        t=user_id,
-        c.execute("""SELECT groups.group_id, groups.title,groups.description,groups.group_type_id,groups.mod_dt,
-                            groups.groups_gid
-                    FROM groups,grouped_users
-                    WHERE groups.group_id = grouped_users.group_id
-                        AND grouped_users.gID = ?""",t)
-        
-        json_return = []
-        i=0
-        
-        for row in c:
-            json_return.append({"id": row[0],
-                "title":row[1],
-            "description":row[2],
-            "type_id":row[3],
-            "mod_dt":row[4],
-            "gid":row[5]})
-            ++i
-        c.close()
-    
+        user=User.gql("WHERE name=:1",user_name).get()
+        json_return=[]
+        for group in user.users_groups:
+            json_return.append({"name":group.title,
+                                "desc":group.description,
+                                "gid":group.group_gid,
+                                "type":group.group_type})
         json.dumps(json_return)
-            
         return json_return
+            
 
-def ListUsersModules(connect,user_id):
+def ListUsersModules(user_name):
         """Lists the modules a user is taking
         inputs:
         --user_id - the ID of the user to show    
         """
-        c=connect.cursor()
+        the_user=User.gql("WHERE name=:1",user_name).get()
+        groups=[]
+        for user_group in the_user.users_groups:
+            groups.append(Group.gql("WHERE key=:1",user_group))
+        modules=[]
+        for group in groups:
+            for module in group.group_modules:
+                if module not in modules:
+                    modules.append(module)
         
-        c.execute("""SELECT modules.module_id, modules.title,modules.description,modules.google_cal_id,modules.mod_dt
-                    FROM grouped_users,timetables,modules
-                    WHERE timetables.group_id = grouped_users.group_id
-                        AND timetables.module_id = modules.module_id
-                        AND grouped_users.gID = ?""",user_id)
-        
-        json_return = []
-        i=0
-        
-        for row in c:
-            json_return.append({"id": row[0],
-                "title":row[1],
-            "description":row[2],
-            "cal_id":row[3],
-            "mod_dt":row[4]})
-            ++i
-        c.close()
-    
+        json_return=[]
+        for module in modules:
+            json_return.append({"name":module.title,
+                                "desc":module.description,
+                                "cal_id":module.google_cal_id})
         json.dumps(json_return)
             
         return json_return
@@ -466,15 +320,12 @@ def RemoveModFromGroup(connect,
         --module_id - the ID of the module to sever
         """
         
-        c=connect.cursor()
-        #finds the group identifier, precedence given to id
-        t=(group_id,module_id)
-        c.execute("""DELETE FROM timetables
-                            WHERE group_id=?
-                            AND module_id=?""",t)
+        e=Group.gql("WHERE title=:1",group_id).get()
+        f=Module.gql("WHERE title=:1",module_id).get()
         
-        connect.commit()
-        c.close
+        if f.key() in e.group_modules:
+            e.group_modules.remove(f.key())
+            e.put()
         
 def RemoveUserFromGroup(connect,
                  user_id,
@@ -486,21 +337,12 @@ def RemoveUserFromGroup(connect,
         --group_id - the ID of the affected group
         """
         
-        c=connect.cursor()
-        t=user_id,group_id
-        #finds the group identifier, precedence given to id
-        c.execute("""DELETE FROM grouped_users
-                            WHERE gID=?
-                            AND group_id=?""",t)
+        e=Group.gql("WHERE title=:1",group_id).get()
+        f=User.gql("WHERE title=:1",user_id).get()
         
-        connect.commit()
-        c.close
-
-def getDate():
-    
-    millis = int(round(time.time() * 1000))
-    return millis
-
+        if e.key() in f.user_groups:
+            f.user_groups.remove(e.key())
+            f.put()
 
 
         
