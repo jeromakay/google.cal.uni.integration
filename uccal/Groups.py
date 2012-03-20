@@ -46,7 +46,7 @@ def deleteGroup(group_id):
 	#delete the group
 	groupClient.DeleteGroup(group_id)
 
-def updateGroup(group_id, new_group_name, new_description='no description given', new_type_id=0, new_email_permission=None):
+def updateGroup(group_id, new_group_name, new_description='no description given', new_type_id=1, new_email_permission=None):
 	"""Updates a google group with the given paramaters 
 	
 		Args:
