@@ -36,35 +36,40 @@ class ModuleAdder(webapp.RequestHandler):
 
 class ModuleDeleter(webapp.RequestHandler):
     def get(self):
-		TemplateMaker.make( self, "Add Modules", "module/delete" )
+		TemplateMaker.make( self, "Delete Modules", "module/delete" )
 
 class ModuleUpdater(webapp.RequestHandler):
     def get(self):
-		TemplateMaker.make( self, "Add Modules", "module/update" )
+		TemplateMaker.make( self, "Update Modules", "module/update" )
 
 class AttendanceChecker(webapp.RequestHandler):
     def get(self):
-		TemplateMaker.make( self, "Add Modules", "module/checkAttendance" )
+		TemplateMaker.make( self, "Check Module Attendance", "module/checkAttendance" )
 
 class ModuleManager(webapp.RequestHandler):
     def get(self):
-		TemplateMaker.make( self, "Add Modules", "module/groupManager" )
+		TemplateMaker.make( self, "Manage Modules/Groups", "module/groupManager" )
 
 #--------Students handlers----------#
+class StudentBrowser(webapp.RequestHandler):
+    def get(self):
+        TemplateMaker.make( self, "Browse Students", "students/browse" )
+
+class StudentAdder(webapp.RequestHandler):
+    def get(self):
+        TemplateMaker.make( self, "Add Students", "students/add" )
+
+class StudentErasmus(webapp.RequestHandler):
+    def get(self):
+        TemplateMaker.make( self, "Erasmus Students", "students/erasmus" )
+
+class StudentRemover(webapp.RequestHandler):
+    def get(self):
+        TemplateMaker.make( self, "Remove Students", "students/remove" )
+		
 #---End Page Display Handlers---#
 
 #---Begin Input Handlers---#
-class GroupAdderAjax(webapp.RequestHandler):
-    def post(self):
-		from uccal import Groups
-		self.response.headers['Content-Type'] = 'text/plain'
-		try :
-			groupName = self.request.get('groupName')
-			groupDescription = self.request.get('groupDescription')
-			Groups.createGroup(groupName, groupDescription)
-			self.response.out.write('ok')
-		except Exception, e:
-			self.response.out.write(e)
 		
 class DeleterAjax(webapp.RequestHandler):
     def post(self):
@@ -74,6 +79,28 @@ class DeleterAjax(webapp.RequestHandler):
 			entityID = self.request.get('entityID')
 			dataType = self.request.get('dataType')
 			Deleters.Delete(dataType, entityID)
+			self.response.out.write('ok')
+		except Exception, e:
+			self.response.out.write(e)
+		
+class FetchersAjax(webapp.RequestHandler):
+    def post(self):
+		from uccal import fetchers
+		self.response.headers['Content-Type'] = 'text/plain'
+		try :
+			fetchers.fetch()
+			self.response.out.write('ok')
+		except Exception, e:
+			self.response.out.write(e)
+
+class GroupAdderAjax(webapp.RequestHandler):
+    def post(self):
+		from uccal import Groups
+		self.response.headers['Content-Type'] = 'text/plain'
+		try :
+			groupName = self.request.get('groupName')
+			groupDescription = self.request.get('groupDescription')
+			Groups.createGroup(groupName, groupDescription)
 			self.response.out.write('ok')
 		except Exception, e:
 			self.response.out.write(e)
@@ -120,15 +147,22 @@ application = webapp.WSGIApplication(
                                       ('/addGroup', GroupAdder),
                                       ('/deleteGroup', GroupDeleter),
                                       ('/updateGroup', GroupUpdater),
-                                      ('/groupManager', GroupManager),									  
+                                      ('/groupManager', GroupManager),
+									#
                                       ('/addModule', ModuleAdder),
                                       ('/deleteModule', ModuleDeleter),
                                       ('/updateModule', ModuleUpdater),
-                                      ('/moduleManager', ModuleManager),
-                                      ('/checkAttendance', AttendanceChecker),
+                                      ('/moduleGroupManager', ModuleManager),
+                                      ('/checkAttendance', AttendanceChecker),									  
+                                    #
+									  ('/studentBrowser', StudentBrowser),
+                                      ('/studentAdder', StudentAdder),
+                                      ('/studentErasmus', StudentErasmus),
+                                      ('/studentRemover', StudentRemover),
 									#methods to deal with imput
-                                      ('/addGroupAjax', GroupAdderAjax),
 									  ('/DeleterAjax', DeleterAjax),
+									  ('/fetchers', FetchersAjax),
+                                      ('/addGroupAjax', GroupAdderAjax),
 									  ('/updateGroupAjax', GroupUpdaterAjax),
                                       ('/groupManagerAjax', GroupManagerAjax),
 									  ('/updateGroupAjax', ModuleUpdaterAjax)],									  
