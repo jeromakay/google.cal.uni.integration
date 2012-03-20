@@ -1,3 +1,5 @@
+#coding=utf-8
+
 import Datastores
 import DB
 if __name__ == '__init__':
