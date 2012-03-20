@@ -34,7 +34,7 @@ def CreateGroupType(name, desc):
             max_group_type=GroupType.gql("ORDER BY group_type_id DESC").get()
             e.group_type_id=max_group_type.group_type_id+1        
         e.put()
-        return e.group_id
+        return e.group_type_id
 
 
 def CreateGroup(gid,
