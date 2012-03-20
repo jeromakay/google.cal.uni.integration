@@ -14,6 +14,29 @@ from google.appengine.ext import db
 #import google.appengine.api.datastore.Entity;
 #import google.appengine.api.datastore.Query;
 
+def CreateGroupType(name, desc):
+    
+        """Creates a group
+        inputs:
+        --gid - the google ID of the group
+        --group_name - the name of the group
+        --description - a brief summary of the new group
+        type_id - the type of group it is
+        """
+        e = GroupType(title=name,
+                  description=desc)
+        e.mod_dt = datetime.datetime.now().date()
+        
+        
+        if GroupType.gql("WHERE group_type_id>=:max").count()<=0:
+            e.group_type_id=0
+        else:
+            max_group_type=GroupType.gql("WHERE group_type_id>=:max").get()
+            e.group_type_id=max_group_type.group_type_id+1        
+        e.put()
+        return e.group_id
+
+
 def CreateGroup(gid,
                  group_Name,
                  desc,
