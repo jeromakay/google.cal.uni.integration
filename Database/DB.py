@@ -25,7 +25,7 @@ def CreateGroupType(name, desc):
         """
         e = GroupType(title=name,
                   description=desc)
-        e.mod_dt = datetime.datetime.now().date()
+        e.mod_dt = datetime.datetime.now()
         
         
         if GroupType.gql("ORDER BY group_type_id DESC").count()<=0:
@@ -52,7 +52,7 @@ def CreateGroup(gid,
         e = Group(group_gid=gid,
                   title=group_Name,
                   description=desc)
-        e.mod_dt = datetime.datetime.now().date()
+        e.mod_dt = datetime.datetime.now()
         
         
         if Group.gql("ORDER BY group_id DESC").count()<=0:
@@ -116,7 +116,7 @@ def CreateModule(cal_id,
         e=Module(title=name,
                  description=desc,
                  google_cal_id=cal_id)
-        e.mod_dt=datetime.datetime.now().date()
+        e.mod_dt=datetime.datetime.now()
         
         if Module.gql("ORDER BY module_id DESC").count()<=0:
             e.module_id=1
@@ -139,7 +139,7 @@ def CreateUser(  gid,
         --name - the user's name
         """
         e=User(gID=gid,uID=uid,name=name)
-        e.mod_dt=datetime.datetime.now().date()
+        e.mod_dt=datetime.datetime.now()
         
         if User.gql("ORDER BY user_id DESC").count()<=0:
             e.user_id=1
@@ -203,7 +203,7 @@ def EditGroup(group_id,
             e.description=newDesc
         if newType is not None:
             e.group_type=GroupType.gql("WHERE title=:1",newType).get()      
-        e.mod_dt=datetime.datetime.now().date()
+        e.mod_dt=datetime.datetime.now()
         
         e.put()
 
@@ -225,7 +225,7 @@ def EditModule(mod_id,
             e.description=newDesc
         if newCal is not None:
             e.google_cal_id=newCal     
-        e.mod_dt=datetime.datetime.now().date()
+        e.mod_dt=datetime.datetime.now()
         
         e.put()
 
