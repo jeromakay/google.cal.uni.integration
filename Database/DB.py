@@ -5,7 +5,7 @@ Created on 12 M�rta 2012
 
 @author: home
 '''
-import json
+import simplejson as json
 import datetime
 from Datastores import  Module,User,Group,GroupType
 from google.appengine.ext import db
