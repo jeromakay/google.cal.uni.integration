@@ -31,9 +31,17 @@ def CreateGroup(gid,
                   description=desc)
         e.mod_dt = datetime.datetime.now().date()
         
-        e.group_type=GroupType.gql("WHERE title=:1",type_id).get()
+        
+        if Group.gql("WHERE group_id>=:max").count()<=0:
+            e.group_id=1
+        else:
+            max_group=Group.gql("WHERE group_id>=:max").get()
+            e.group_id=max_group.group_id+1
+        
+        e.group_type=GroupType.gql("WHERE group_type_id=:1",type_id).get()
         
         e.put()
+        return e.group_id
 
 def AddModToGroup(
                  group_id,
@@ -62,8 +70,8 @@ def AddUserToGroup(
         --user_id - the user's google account identifier
         """
         
-        e=Group.gql("WHERE title=:1",group_id).get()
-        f=User.gql("WHERE title=:1",user_id).get()
+        e=Group.gql("WHERE group_id=:1",group_id).get()
+        f=User.gql("WHERE user_id=:1",user_id).get()
         
         if e.key() not in f.user_groups:
             f.user_groups.append(e.key())
@@ -87,7 +95,15 @@ def CreateModule(cal_id,
                  google_cal_id=cal_id)
         e.mod_dt=datetime.datetime.now().date()
         
+        if Module.gql("WHERE module_id>=:max").count()<=0:
+            e.module_id=1
+        else:
+            max_mod=Module.gql("WHERE module_id>=:max").get()
+            e.module_id=max_mod.module_id+1
+        
+        
         e.put()
+        return e.module_id
 
 def CreateUser(  gid,
                  uid,
@@ -101,30 +117,38 @@ def CreateUser(  gid,
         """
         e=User(gID=gid,uID=uid,name=name)
         e.mod_dt=datetime.datetime.now().date()
+        
+        if User.gql("WHERE user_id>=:max").count()<=0:
+            e.user_id=1
+        else:
+            max_user=User.gql("WHERE user_id>=:max").get()
+            e.user_id=max_user.user_id+1
+        
         e.put()
+        return e.user_id
 
-def DeleteGroup(group_name
+def DeleteGroup(group_id
                  ):
         """Deletes a group
         inputs:
         --group_id - the ID of the group to delete
         """
-        e=Group.gql("WHERE title=:1",group_name).get()
+        e=Group.gql("WHERE group_id=:1",group_id).get()
         db.delete(e)
        
        
-def DeleteModule(module_name
+def DeleteModule(module_id
                  ):
         """Deletes a module
         inputs:
         --group_id - the ID of the module to delete
         """
-        e=Module.gql("WHERE title=:1",module_name).get()
+        e=Module.gql("WHERE module_id=:1",module_id).get()
         db.delete(e)
         
 
 
-def DeleteUser(user_name
+def DeleteUser(user_id
                  ):
     
         """Deletes a user
@@ -132,11 +156,11 @@ def DeleteUser(user_name
         --group_id - the ID of the user to delete
         """
         
-        e=User.gql("WHERE title=:1",user_name).get()
+        e=User.gql("WHERE user_id=:1",user_id).get()
         db.delete(e)
 
 
-def EditGroup(name,
+def EditGroup(id,
               newName=None,
               newDesc=None,
               newType=None
@@ -149,7 +173,7 @@ def EditGroup(name,
         --description - if changed, the new description of the group
         --group_type - if changed, the new type of the group
         """
-        e=Group.gql("WHERE title=:1",name).get()
+        e=Group.gql("WHERE group_id=:1",id).get()
         if newName is not None:
             e.title=newName
         if newDesc is not None:
@@ -160,7 +184,7 @@ def EditGroup(name,
         
         e.put()
 
-def EditModule(name,
+def EditModule(id,
                newName=None,
                newDesc=None,
                newCal=None
@@ -171,7 +195,7 @@ def EditModule(name,
         --title - if changed, the new title of the module
         --description - if changed, the new description of the module
         """
-        e=Module.gql("WHERE title=:1",name).get()
+        e=Module.gql("WHERE module_id=:1",id).get()
         if newName is not None:
             e.title=newName
         if newDesc is not None:
@@ -182,18 +206,19 @@ def EditModule(name,
         
         e.put()
 
-def ListGroupedUsers(group_name):
+def ListGroupedUsers(group_id):
         """Lists the users in a group
         inputs:
         --group_id - the ID of the group to show    
         """
        
-        the_group=Group.gql("WHERE title=:1",group_name ).get()
+        the_group=Group.gql("WHERE group_id=:1",group_id ).get()
         Users=the_group.users()
         json_return=[]
         for person in Users:
             if the_group in person.users_groups:
                 json_return.append({"name":person.name,
+                                    "id":person.user_id,
                                     "gid":person.gID,
                                     "uid":person.uID})
         json.dumps(json_return)
@@ -208,6 +233,7 @@ def ListGroups():
         Groups=Group.gql("")    
         for group in Groups:
             json_return.append({"name":group.title,
+                                "id":group.group_id,
                                 "desc":group.description,
                                 "gid":group.group_gid,
                                 "type":group.group_type})
@@ -222,21 +248,23 @@ def ListGroupTypes():
         GroupTypes=GroupType.gql("")    
         for grouptype in GroupTypes:
             json_return.append({"name":grouptype.title,
+                                "id":grouptype.group_type_id,
                                 "desc":grouptype.description})
         json.dumps(json_return)
             
         return json_return
     
-def ListModuleGroups(module_name):
+def ListModuleGroups(module_id):
         """Lists the groups attatched to a module
         inputs:
         --module_id - the ID of the module to show    
         """
-        the_module=Module.gql("WHERE title=:1",module_name ).get()
+        the_module=Module.gql("WHERE module_id=:1",module_id ).get()
         Groups=the_module.groups()
         json_return=[]
         for group in Groups:
                 json_return.append({"name":group.title,
+                                    "id":group.group_id,
                                 "desc":group.description,
                                 "gid":group.group_gid,
                                 "type":group.group_type})
@@ -251,6 +279,7 @@ def ListModules():
         Modules=Module.gql("")    
         for module in Modules:
             json_return.append({"name":module.title,
+                                "id":module.module_id,
                                 "desc":module.description,
                                 "cal_id":module.google_cal_id})
         json.dumps(json_return)
@@ -265,20 +294,22 @@ def ListUsers():
         json_return=[]
         for user in Users:
             json_return.append({"name":user.name,
+                                "id":user.user_id,
                                 "gid":user.gID,
                                 "uid":user.uID})
         json.dumps(json_return)
         return json_return
     
-def ListUsersGroups(user_name):
+def ListUsersGroups(user_id):
         """Lists the groups a user is in
         inputs:
         --user_id - the ID of the user to show    
         """
-        user=User.gql("WHERE name=:1",user_name).get()
+        user=User.gql("WHERE user_id=:1",user_id).get()
         json_return=[]
         for group in user.users_groups:
             json_return.append({"name":group.title,
+                                "id":group.group_id,
                                 "desc":group.description,
                                 "gid":group.group_gid,
                                 "type":group.group_type})
@@ -286,12 +317,12 @@ def ListUsersGroups(user_name):
         return json_return
             
 
-def ListUsersModules(user_name):
+def ListUsersModules(user_id):
         """Lists the modules a user is taking
         inputs:
         --user_id - the ID of the user to show    
         """
-        the_user=User.gql("WHERE name=:1",user_name).get()
+        the_user=User.gql("WHERE user_id=:1",user_id).get()
         groups=[]
         for user_group in the_user.users_groups:
             groups.append(Group.gql("WHERE key=:1",user_group))
@@ -304,14 +335,14 @@ def ListUsersModules(user_name):
         json_return=[]
         for module in modules:
             json_return.append({"name":module.title,
+                                "id":module.module_id,
                                 "desc":module.description,
                                 "cal_id":module.google_cal_id})
         json.dumps(json_return)
             
         return json_return
     
-def RemoveModFromGroup(connect,
-                 module_id,
+def RemoveModFromGroup(module_id,
                  group_id
                  ):
         """Deletes a module from a group
@@ -327,7 +358,7 @@ def RemoveModFromGroup(connect,
             e.group_modules.remove(f.key())
             e.put()
         
-def RemoveUserFromGroup(connect,
+def RemoveUserFromGroup(
                  user_id,
                  group_id
                  ):

@@ -4,12 +4,14 @@ from google.appengine.ext import db
 
 class GroupType(db.Model):
     title=db.StringProperty()
+    group_type_id=db.IntegerProperty()
     description=db.StringProperty()
     
     
   
 class Group(db.Model):
     group_gid=db.StringProperty()
+    group_id=db.IntegerProperty()
     title=db.StringProperty()
     description=db.StringProperty()
     mod_dt=db.DateTimeProperty()
@@ -24,6 +26,7 @@ class Group(db.Model):
     
 class Module(db.Model):
     google_cal_id=db.StringProperty()
+    module_id=db.IntegerProperty()
     title=db.StringProperty()
     description=db.StringProperty()
     mod_dt=db.DateTimeProperty()
@@ -34,6 +37,7 @@ class Module(db.Model):
 class User(db.Model):
     gID=db.StringProperty()
     uID=db.StringProperty()
+    user_id=db.IntegerProperty()
     name=db.StringProperty()
     mod_dt=db.DateTimeProperty()
     
