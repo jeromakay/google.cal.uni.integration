@@ -34,6 +34,8 @@ def CreateGroupType(name, desc):
             max_group_type=GroupType.gql("ORDER BY group_type_id DESC").get()
             e.group_type_id=max_group_type.group_type_id+1        
         e.put()
+        while not(e.is_saved()):
+            None
         return e.group_type_id
 
 
@@ -64,6 +66,8 @@ def CreateGroup(gid,
         e.group_type=GroupType.gql("WHERE group_type_id=:1",type_id).get()
         
         e.put()
+        while not(e.is_saved()):
+            None
         return e.group_id
 
 def AddModToGroup(
@@ -126,6 +130,8 @@ def CreateModule(cal_id,
         
         
         e.put()
+        while not(e.is_saved()):
+            None
         return e.module_id
 
 def CreateUser(  gid,
@@ -148,6 +154,8 @@ def CreateUser(  gid,
             e.user_id=max_user.user_id+1
         
         e.put()
+        while not(e.is_saved()):
+            None
         return e.user_id
 
 def DeleteGroup(group_id
