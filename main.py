@@ -88,8 +88,8 @@ class FetchersAjax(webapp.RequestHandler):
 		from uccal import fetchers
 		self.response.headers['Content-Type'] = 'text/plain'
 		try :
-			fetchers.fetch()
-			self.response.out.write('ok')
+			json = fetchers.fetch()
+			self.response.out.write(json)
 		except Exception, e:
 			self.response.out.write(e)
 

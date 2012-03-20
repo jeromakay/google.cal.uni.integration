@@ -1,4 +1,5 @@
-return """// groups
+def fetch();
+	return """// groups
 				json = {results: [ 
 								{id: 1, group_type: 1, group_gid: "2dabd109cf892b94e72563da710669c4", title: "IT WORKED, CLAM DOWN", description: "Everyone in Web Systems Engineering" }, 
 								{id: 2, group_type: 1, group_gid: "ee8efdd53326e275390b866473aac247", title: "food_and_science_ck401_3rd_cs", description: "Everyone in Computer Science Hons" }, 
