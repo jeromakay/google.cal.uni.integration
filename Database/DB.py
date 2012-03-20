@@ -166,6 +166,8 @@ def DeleteGroup(group_id
         """
         e=Group.gql("WHERE group_id=:1",group_id).get()
         db.delete(e)
+        while e.is_saved():
+            None
        
        
 def DeleteModule(module_id
@@ -189,6 +191,8 @@ def DeleteUser(user_id
         
         e=User.gql("WHERE user_id=:1",user_id).get()
         db.delete(e)
+        while e.is_saved():
+            None
 
 
 def EditGroup(group_id,
@@ -214,6 +218,7 @@ def EditGroup(group_id,
         e.mod_dt=datetime.datetime.now()
         
         e.put()
+        
 
 def EditModule(mod_id,
                newName=None,
