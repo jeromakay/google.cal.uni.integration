@@ -28,10 +28,10 @@ def CreateGroupType(name, desc):
         e.mod_dt = datetime.datetime.now().date()
         
         
-        if GroupType.gql("WHERE group_type_id>=:max").count()<=0:
+        if GroupType.gql("ORDER BY group_type_id DESC").count()<=0:
             e.group_type_id=0
         else:
-            max_group_type=GroupType.gql("WHERE group_type_id>=:max").get()
+            max_group_type=GroupType.gql("ORDER BY group_type_id DESC").get()
             e.group_type_id=max_group_type.group_type_id+1        
         e.put()
         return e.group_id
@@ -55,10 +55,10 @@ def CreateGroup(gid,
         e.mod_dt = datetime.datetime.now().date()
         
         
-        if Group.gql("WHERE group_id>=:max").count()<=0:
+        if Group.gql("ORDER BY group_id DESC").count()<=0:
             e.group_id=1
         else:
-            max_group=Group.gql("WHERE group_id>=:max").get()
+            max_group=Group.gql("ORDER BY group_id DESC").get()
             e.group_id=max_group.group_id+1
         
         e.group_type=GroupType.gql("WHERE group_type_id=:1",type_id).get()
@@ -118,10 +118,10 @@ def CreateModule(cal_id,
                  google_cal_id=cal_id)
         e.mod_dt=datetime.datetime.now().date()
         
-        if Module.gql("WHERE module_id>=:max").count()<=0:
+        if Module.gql("ORDER BY module_id DESC").count()<=0:
             e.module_id=1
         else:
-            max_mod=Module.gql("WHERE module_id>=:max").get()
+            max_mod=Module.gql("ORDER BY module_id DESC").get()
             e.module_id=max_mod.module_id+1
         
         
@@ -141,10 +141,10 @@ def CreateUser(  gid,
         e=User(gID=gid,uID=uid,name=name)
         e.mod_dt=datetime.datetime.now().date()
         
-        if User.gql("WHERE user_id>=:max").count()<=0:
+        if User.gql("ORDER BY user_id DESC").count()<=0:
             e.user_id=1
         else:
-            max_user=User.gql("WHERE user_id>=:max").get()
+            max_user=User.gql("ORDER BY user_id DESC").get()
             e.user_id=max_user.user_id+1
         
         e.put()
@@ -183,7 +183,7 @@ def DeleteUser(user_id
         db.delete(e)
 
 
-def EditGroup(id,
+def EditGroup(group_id,
               newName=None,
               newDesc=None,
               newType=None
@@ -196,7 +196,7 @@ def EditGroup(id,
         --description - if changed, the new description of the group
         --group_type - if changed, the new type of the group
         """
-        e=Group.gql("WHERE group_id=:1",id).get()
+        e=Group.gql("WHERE group_id=:1",group_id).get()
         if newName is not None:
             e.title=newName
         if newDesc is not None:
@@ -207,7 +207,7 @@ def EditGroup(id,
         
         e.put()
 
-def EditModule(id,
+def EditModule(mod_id,
                newName=None,
                newDesc=None,
                newCal=None
@@ -218,7 +218,7 @@ def EditModule(id,
         --title - if changed, the new title of the module
         --description - if changed, the new description of the module
         """
-        e=Module.gql("WHERE module_id=:1",id).get()
+        e=Module.gql("WHERE module_id=:1",mod_id).get()
         if newName is not None:
             e.title=newName
         if newDesc is not None:
