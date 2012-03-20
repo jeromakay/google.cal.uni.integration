@@ -1,0 +1,241 @@
+<h1>Groups management</h1>
+
+	
+
+	<!-- Vlad 08/03/2012 BEGIN -->
+
+	
+
+	<nav id="breadcrumbs">
+
+		<a href="#">Groups</a> &raquo; <a href="#">Group users management</a>
+
+	</nav>
+
+	
+
+	<h2>Group users management</h2>
+
+	
+
+	<dl class="dropdown" id="groups-list-drop-down">
+
+		<dt><a href="#" style="width:300px;"><span>Please select a group</span></a></dt>
+
+		<dd>
+
+			<ul id="groups-list">
+
+			</ul>
+
+		</dd>
+
+	</dl>
+
+	
+
+	<form id="add-user-form" style="display:none;">
+
+		<p>
+
+			<label for="addGroupName">User(s) to add:</label><br />
+
+			<input type="text" name="addUserName" id="addUserName" style="width:50%" />
+
+		</p>
+
+
+
+		<p>
+
+			<a class="button" id="addUserSubmit">Add user(s) to group &raquo;</a>
+
+		</p>		
+
+	</form>
+
+	
+
+	<p id="no-users-available-holder" style="display:none">Sorry, there are no users available inside Google Apps. Please add some first!</p>
+
+	
+
+	<div id="members-list"></div>
+
+	
+
+<div id="AI"><div>Please wait, loading...</div></div>
+
+<script type="text/javascript" src="js/fetchers.js"></script>
+
+<link rel="stylesheet" type="text/css" href="css/autoSuggest.css" />
+
+<script type="text/javascript" src="js/jquery.autoSuggest.js"></script>
+
+<script type="text/javascript">
+
+$(window).load(function () 
+
+{
+
+	hideAI( );
+
+	fetchGroups( function( json ) 
+
+	{
+
+		var rowsArray = json.results;
+
+
+
+		if ( rowsArray.length > 0 )
+
+		{
+
+			$.each( rowsArray, function( i, v )
+
+			{
+
+				var el = $('<li id="group_item_'+ v.group_gid +'"><a href="#" id="group_id_'+ v.group_gid +'">'+ v.title +'<span class="value">'+ v.group_gid +'</span></a></li>');
+
+				el.appendTo( "#groups-list" );
+
+			});
+
+
+
+			initDropDowns( "groups-list-drop-down", function( )
+
+			{
+
+				$( "#add-user-form" ).show( );
+
+				$( "#no-users-available-holder").hide( );
+
+				var groupID = $( "#groups-list-drop-down" ).find("dt a span.value").html( );
+
+				
+
+			
+
+				// let's fetch the users for this selected group
+
+				fetchAllUsers( function( usersJson ) 
+
+				{	
+
+					var usersArray = usersJson.results;
+
+
+
+					//var users_autosuggest_data = {items: []};
+
+					var users_autosuggest_data = [];
+
+					
+
+					$.each( usersArray, function( i, v )
+
+					{
+
+						//users_autosuggest_data.items[i] = {value: v.gID, name: v.name + " ( "+ v.UID +")<span class='value'>"+ v.gID +"</span>" };
+
+						users_autosuggest_data[i] = {value: v.gID, name: v.name + " ( "+ v.UID +")" };
+
+					});
+
+					
+
+					// tie the autosuggest feature to the users addition field
+
+					$( function( )
+
+					{
+
+						$("#addUserName").autoSuggest( users_autosuggest_data, 
+
+						{
+
+							startText: "Type a name here to get suggestions", 
+
+							emptyText: "No users matching your entry found inside Google Apps.",
+
+							selectedItemProp: "name", 
+
+							searchObjProps: "name",
+
+							neverSubmit: true,
+
+							asHtmlID: "newGroupUsers"
+
+						});
+
+					});
+
+
+
+					//alert(  usersArray );
+
+					hideAI( );
+
+					
+
+					// todo, if we have no users, show a paragraph saying there are no users, in the function below, not in this one
+
+					
+
+					//todo, create a table which will be populated inside the DIV#members-list
+
+					
+
+					// todo, if a different group is selected, make sure that the old list is cleared, or the "no users" paragraph dissapears as well.
+
+					
+
+				}, function( )
+
+				{
+
+					$( "#add-user-form" ).hide( );
+
+					$( "#no-users-available-holder").show( );
+
+				});
+
+				
+
+				
+
+			});
+
+		}
+
+
+
+		hideAI( );
+
+		
+
+		$( "#addUserSubmit" ).click( function( )
+
+		{
+
+			alert( $( "#newGroupUsers" ).val( ) );
+
+		});
+
+		
+
+	}, function( ) {
+
+		alert( "no groups, callback!" );
+
+	});
+
+});
+
+
+
+</script>
+
+<!-- Vlad 08/03/2012 END -->

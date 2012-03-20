@@ -1,0 +1,199 @@
+	<h1>Modules management</h1>
+
+	
+
+	<!-- Vlad 08/03/2012 BEGIN -->
+
+	
+
+	<nav id="breadcrumbs">
+
+		<a href="#">Modules</a> &raquo; <a href="#">Edit modules</a>
+
+	</nav>
+
+	
+
+	<h2>Edit modules</h2>
+
+	
+
+	<dl class="dropdown" id="modules-list-drop-down">
+
+		<dt><a href="#" style="width:300px;"><span>Please select a module</span></a></dt>
+
+		<dd>
+
+			<ul id="modules-list">
+
+			</ul>
+
+		</dd>
+
+	</dl>
+
+	
+
+	<form id="module-edit-form" style="display:none">
+
+		<input type="hidden" name=editModuleGID"" id="editModuleGID" />
+
+		<p>
+
+			<label for="editModuleName">Module name:</label><br />
+
+			<input type="text" name="editModuleName" id="editModuleName" style="width:50%" />
+
+		</p>
+
+		
+
+		<p>
+
+			<label for="editModuleDescription">Module description:</label><br />
+
+			<textarea name="editModuleDescription" id="editModuleDescription" style="width:50%;height:500px;"></textarea>
+
+		</p>
+
+
+
+		<p>
+
+			<a class="button" id="editModuleSubmit">Save changes &raquo;</a>
+
+		</p>
+
+	</form>
+
+	
+
+	<!-- Vlad 08/03/2012 END -->
+
+		
+
+<!-- Vlad 08/03/2012 BEGIN -->
+
+<div id="AI"><div>Please wait, loading...</div></div>
+
+<script type="text/javascript" src="js/fetchers.js"></script>
+
+<script type="text/javascript" src="js/deleters.js"></script>
+
+<script type="text/javascript">
+
+$(window).load(function () 
+
+{
+
+	hideAI( );
+
+	fetchModules( function( json ) 
+
+	{
+
+		var rowsArray = json.results;
+
+	
+
+		if ( rowsArray.length > 0 )
+
+		{
+
+			$.each( rowsArray, function( i, v )
+
+			{
+
+				var el = $('<li id="module_item_'+ v.google_cal_id +'"><a href="#" id="module_id_'+ v.google_cal_id +'">'+ v.title +'<span class="value">'+ v.google_cal_id +'</span></a></li>');
+
+				el.appendTo( "#modules-list" );
+
+			});
+
+
+
+			initDropDowns( "modules-list-drop-down", function( ){
+
+				$( "#editModuleHolder" ).show( );
+
+				$( "#module-edit-form" ).show( );
+
+				
+
+				var selectedModuleID = $( "#modules-list-drop-down" ).find("dt a span.value").html();
+
+				
+
+				$.each( rowsArray, function( i, v )
+
+				{
+
+					if ( v.google_cal_id == selectedModuleID )
+
+					{
+
+						$( "#editModuleGID" ).val( v.google_cal_id );
+
+						$( "#editModuleName" ).val( v.title );
+
+						$( "#editModuleDescription" ).val( v.description );
+
+					}
+
+				});
+
+			});
+
+		}
+
+		
+
+		hideAI( );
+
+		
+
+		$("#editModuleSubmit").click( function( ) 
+
+		{
+
+			if (confirm( "Are you sure you want to submit these changes?" ) )
+
+			{
+
+				var moduleID = $( "#modules-list-drop-down" ).find("dt a span.value").html();
+
+				
+
+				// todo, fetch all the data from the form, including the module gID and we should all be good
+
+				
+
+				/*
+
+				deleteGroup( groupID, function( ) {
+
+					$( '#group_item_'+ groupID ).remove( );
+
+					alert( "The selected group was successfully removed!" );
+
+				});
+
+				*/
+
+			}
+
+		});
+
+		
+
+	}, function( ) {
+
+		alert( "no groups, callback!" );
+
+	});
+
+});
+
+</script>
+
+<!-- Vlad 08/03/2012 END -->

@@ -1,0 +1,265 @@
+<h1>Groups management</h1>
+
+	
+
+	<!-- Vlad 08/03/2012 BEGIN -->
+
+	
+
+	<nav id="breadcrumbs">
+
+		<a href="#">Groups</a> &raquo; <a href="#">Edit groups</a>
+
+	</nav>
+
+	
+
+	<h2>Edit groups</h2>
+
+	
+
+	<dl class="dropdown" id="groups-list-drop-down">
+
+		<dt><a href="#" style="width:300px;"><span>Please select a group</span></a></dt>
+
+		<dd>
+
+			<ul id="groups-list">
+
+			</ul>
+
+		</dd>
+
+	</dl>
+
+	
+
+	<form id="group-edit-form" style="display:none">
+
+		<input type="hidden" name=editGroupGID"" id="editGroupGID" />
+
+		<p>
+
+			<label for="editGroupName">Group name:</label><br />
+
+			<input type="text" name="editGroupName" id="editGroupName" style="width:50%" />
+
+		</p>
+
+		
+
+		<dl class="dropdown" id="group-types-list-drop-down">
+
+			<dt><a href="#" style="width:300px;"><span>Please select a group type</span></a></dt>
+
+			<dd>
+
+				<ul id="groups-types-list">
+
+				</ul>
+
+			</dd>
+
+		</dl>
+
+
+
+		<p>
+
+			<label for="editGroupDescription">Group description:</label><br />
+
+			<textarea name="editGroupDescription" id="editGroupDescription" style="width:50%;height:500px;"></textarea>
+
+		</p>
+
+
+
+		<p>
+
+			<a class="button" id="editGroupSubmit">Save changes &raquo;</a>
+
+		</p>
+
+	</form>
+
+	
+
+	<!-- Vlad 08/03/2012 END -->
+
+		
+
+<!-- Vlad 08/03/2012 BEGIN -->
+
+<div id="AI"><div>Please wait, loading...</div></div>
+
+<script type="text/javascript" src="js/fetchers.js"></script>
+
+<script type="text/javascript" src="js/deleters.js"></script>
+
+<script type="text/javascript">
+
+$(window).load(function () 
+
+{
+
+	hideAI( );
+
+	fetchGroups( function( json ) 
+
+	{
+
+		var rowsArray = json.results;
+
+	
+
+		if ( rowsArray.length > 0 )
+
+		{
+
+			$.each( rowsArray, function( i, v )
+
+			{
+
+				var el = $('<li id="group_item_'+ v.id +'"><a href="#" id="group_id_'+ v.id +'">'+ v.title +'<span class="value">'+ v.id +'</span></a></li>');
+
+				el.appendTo( "#groups-list" );
+
+			});
+
+
+
+			initDropDowns( "groups-list-drop-down", function( ){
+
+				$( "#editGroupHolder" ).show( );
+
+				$( "#group-edit-form" ).show( );
+
+				
+
+				var selectedGroupID = $( "#groups-list-drop-down" ).find("dt a span.value").html();
+
+
+
+				$.each( rowsArray, function( i, v )
+
+				{
+
+					if ( v.id == selectedGroupID )
+
+					{
+
+						$( "#editGroupGID" ).val( v.group_gid );
+
+					
+
+						var groupTypes = json.groupTypes;
+
+						var defaultGroupTypeOptionName, defaultGroupTypeOptionValue;
+
+						
+
+						$.each( groupTypes, function( i2, v2 )
+
+						{
+
+							var el = $('<li id="group_type_item_'+ v2.id +'"><a href="#" id="group_type_id_'+ v2.id +'">'+ v2.name +'<span class="value">'+ v2.id +'</span></a></li>');
+
+							el.appendTo( "#groups-types-list" );
+
+
+
+							if ( v.group_type == v2.id )
+
+							{
+
+								defaultGroupTypeOptionName  = v2.name;
+
+								defaultGroupTypeOptionValue = v2.id;
+
+							}
+
+						});
+
+
+
+						initDropDowns( "group-types-list-drop-down");
+
+
+
+						if ( defaultGroupTypeOptionName )
+
+						{
+
+							$("#group-types-list-drop-down.dropdown dt a span").html( defaultGroupTypeOptionName + '<span class="value">'+ defaultGroupTypeOptionValue +'</span>' );
+
+							$("#group-types-list-drop-down.dropdown dd ul").hide();
+
+						}
+
+
+
+						$( "#editGroupName" ).val( v.title );
+
+						$( "#editGroupDescription" ).val( v.description );
+
+					}
+
+				});
+
+			});
+
+		}
+
+		
+
+		hideAI( );
+
+		
+
+		$("#editGroupSubmit").click( function( ) 
+
+		{
+
+			if (confirm( "Are you sure you want to submit these changes?" ) )
+
+			{
+
+				var groupID = $( "#groups-list-drop-down" ).find("dt a span.value").html();
+
+				
+
+				// todo, fetch all the data from the form, including the group gID and we should all be good
+
+				
+
+				/*
+
+				deleteGroup( groupID, function( ) {
+
+					$( '#group_item_'+ groupID ).remove( );
+
+					alert( "The selected group was successfully removed!" );
+
+				});
+
+				*/
+
+			}
+
+		});
+
+		
+
+	}, function( ) {
+
+		alert( "no groups, callback!" );
+
+	});
+
+});
+
+</script>
+
+<!-- Vlad 08/03/2012 END -->
+
+

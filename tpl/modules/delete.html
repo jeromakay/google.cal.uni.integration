@@ -1,0 +1,137 @@
+	<h1>Modules management</h1>
+
+	
+
+	<!-- Vlad 08/03/2012 BEGIN -->
+
+	
+
+	<nav id="breadcrumbs">
+
+		<a href="#">Modules</a> &raquo; <a href="#">Delete modules</a>
+
+	</nav>
+
+	
+
+	<h2>Delete modules</h2>
+
+	
+
+	<dl class="dropdown" id="modules-list-drop-down">
+
+		<dt><a href="#" style="width:300px;"><span>Please select a module</span></a></dt>
+
+		<dd>
+
+			<ul id="modules-list">
+
+			</ul>
+
+		</dd>
+
+	</dl>
+
+	
+
+	<p id="deleteModuleHolder" style="display:none;"><a class="redButton button" id="buttonDeleteModule">Delete Module &raquo;</a></p>
+
+	<!-- Vlad 08/03/2012 END -->
+
+		
+
+<!-- Vlad 08/03/2012 BEGIN -->
+
+<div id="AI"><div>Please wait, loading...</div></div>
+
+<script type="text/javascript" src="js/fetchers.js"></script>
+
+<script type="text/javascript" src="js/deleters.js"></script>
+
+<script type="text/javascript">
+
+$(window).load(function () 
+
+{
+
+	hideAI( );
+
+	fetchModules( function( json ) 
+
+	{
+
+		var rowsArray = json.results;
+
+
+
+		if ( rowsArray.length > 0 )
+
+		{
+
+			$.each( rowsArray, function( i, v )
+
+			{
+
+				var el = $('<li id="module_item_'+ v.google_cal_id +'"><a href="#" id="module_id_'+ v.google_cal_id +'">'+ v.title +'<span class="value">'+ v.google_cal_id +'</span></a></li>');
+
+				el.appendTo( "#modules-list" );
+
+			});
+
+
+
+			initDropDowns( "modules-list-drop-down", function( )
+
+			{
+
+				$( "#deleteModuleHolder" ).show( );
+
+			});
+
+		}
+
+
+
+		hideAI( );
+
+		
+
+		$("#buttonDeleteModule").click( function( ) 
+
+		{
+
+			if (confirm( "Please keep in mind that your action cannot be reversed, and all the references for the groups attending this module will be removed.\n\nAre you sure you want to remove this module (including its Google Calendar stored Google Apps)?" ) )
+
+			{
+
+				var moduleID = $( "#modules-list-drop-down" ).find("dt a span.value").html( );
+
+				
+
+				deleteModule( moduleID, function( ) 
+
+				{
+
+					$( '#module_item_'+ moduleID ).remove( );
+
+					alert( "The selected module was successfully removed!" );				
+
+				});
+
+			}
+
+		});
+
+		
+
+	}, function( ) {
+
+		alert( "no groups, callback!" );
+
+	});
+
+});
+
+</script>
+
+<!-- Vlad 08/03/2012 END -->
