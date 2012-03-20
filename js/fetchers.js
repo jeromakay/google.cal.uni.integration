@@ -31,7 +31,7 @@ function fetchData( dataType, callbackOK, callbackNoResults, subDataID )
 	if ( dataType == "groups" )
 	{
 
-				// groups
+				/*// groups
 				json = {results: [ 
 								{id: 1, group_type: 1, group_gid: "2dabd109cf892b94e72563da710669c4", title: "food_and_science_ck401_3rd_web_sys_eng", description: "Everyone in Web Systems Engineering" }, 
 								{id: 2, group_type: 1, group_gid: "ee8efdd53326e275390b866473aac247", title: "food_and_science_ck401_3rd_cs", description: "Everyone in Computer Science Hons" }, 
@@ -46,6 +46,7 @@ function fetchData( dataType, callbackOK, callbackNoResults, subDataID )
 								{ id: 2, name: "lecturers" },
 								{ id: 3, name: "assistants" }
 							] };
+							*/
 	} 
 	else if ( dataType == "modules" )
 	{
@@ -70,7 +71,7 @@ function fetchData( dataType, callbackOK, callbackNoResults, subDataID )
 						{gID: "79f65a600ea5079115d4de4028a6805d", UID: "109589951", name: "Tomas William Jackson" } ] };
 		}
 	}
-	
+	/*
 				// move me begin
 				if ( json && json.results ) 
 				{
@@ -95,24 +96,34 @@ function fetchData( dataType, callbackOK, callbackNoResults, subDataID )
 				}
 				// move me end
 				return;
+				*/
 
 	$.getJSON({
 	  type: "POST",
-	  url: 	"createGroup.py",
+	  url: 	"fetchers",
 	  data: params }).done( 
 		  function( json ) 
 			{
-				hideAI( );
-
-				if ( msg.toLowerCase( ) == "ok" ) 
+				if ( json && json.results ) 
 				{
-					alert( "The \""+ params.groupName +"\" group was successfully added!" );
-					$( '#addGroupName' ).val( '' );
-					$( '#addGroupDescription' ).val( '' );
+					if (  json.results.length == 0 )
+					{
+						if ( callbackNoResults )
+						{
+							callbackNoResults( );
+						}
+					}
+					else if ( callbackOK )
+					{
+						callbackOK( json );
+					}
 				}
 				else
 				{
-					alert( "Error: "+ msg );
+					if ( json && json.error )
+					{
+						alert( "Error: "+ json.error );
+					}
 				}
 			});
 
