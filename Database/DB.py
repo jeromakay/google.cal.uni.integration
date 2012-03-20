@@ -56,7 +56,7 @@ def CreateGroup(gid,
         
         
         if Group.gql("ORDER BY group_id DESC").count()<=0:
-            e.group_id=1
+            e.group_id=0
         else:
             max_group=Group.gql("ORDER BY group_id DESC").get()
             e.group_id=max_group.group_id+1
@@ -119,7 +119,7 @@ def CreateModule(cal_id,
         e.mod_dt=datetime.datetime.now()
         
         if Module.gql("ORDER BY module_id DESC").count()<=0:
-            e.module_id=1
+            e.module_id=0
         else:
             max_mod=Module.gql("ORDER BY module_id DESC").get()
             e.module_id=max_mod.module_id+1
@@ -142,7 +142,7 @@ def CreateUser(  gid,
         e.mod_dt=datetime.datetime.now()
         
         if User.gql("ORDER BY user_id DESC").count()<=0:
-            e.user_id=1
+            e.user_id=0
         else:
             max_user=User.gql("ORDER BY user_id DESC").get()
             e.user_id=max_user.user_id+1
