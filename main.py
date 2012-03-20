@@ -9,27 +9,48 @@ from google.appengine.ext.webapp import template
 #--Begin Page Display Handlers---#
 class Main(webapp.RequestHandler):
     def get(self):
-		TemplateMaker.make( self, "Main Page", "main" )
+		TemplateMaker.make( self, "Main Page", "root/main" )
 
+#--------Group handlers----------#
 class GroupAdder(webapp.RequestHandler):
     def get(self):
-        TemplateMaker.make( self, "Add Groups", "addGroup" )
+        TemplateMaker.make( self, "Add Groups", "groups/add" )
 		
 class GroupDeleter(webapp.RequestHandler):
     def get(self):
-		TemplateMaker.make( self, "Delete Groups", "deleteGroup" )
+		TemplateMaker.make( self, "Delete Groups", "groups/delete" )
 			
 class GroupUpdater(webapp.RequestHandler):
     def get(self):
-		TemplateMaker.make( self, "Update Groups", "updateGroup" )
+		TemplateMaker.make( self, "Update Groups", "groups/update" )
 			
 class GroupManager(webapp.RequestHandler):
     def get(self):
-		TemplateMaker.make( self, "Manage Groups", "groupManager" )
+		TemplateMaker.make( self, "Manage Groups", "groups/manage" )
+
+		
+#--------Module handlers---------#
+class ModuleAdder(webapp.RequestHandler):
+    def get(self):
+		TemplateMaker.make( self, "Add Modules", "module/add" )
+
+class ModuleDeleter(webapp.RequestHandler):
+    def get(self):
+		TemplateMaker.make( self, "Add Modules", "module/delete" )
 
 class ModuleUpdater(webapp.RequestHandler):
     def get(self):
-		TemplateMaker.make( self, "Add Modules", "addModule" )
+		TemplateMaker.make( self, "Add Modules", "module/update" )
+
+class AttendanceChecker(webapp.RequestHandler):
+    def get(self):
+		TemplateMaker.make( self, "Add Modules", "module/checkAttendance" )
+
+class ModuleManager(webapp.RequestHandler):
+    def get(self):
+		TemplateMaker.make( self, "Add Modules", "module/groupManager" )
+
+#--------Students handlers----------#
 #---End Page Display Handlers---#
 
 #---Begin Input Handlers---#
@@ -99,8 +120,12 @@ application = webapp.WSGIApplication(
                                       ('/addGroup', GroupAdder),
                                       ('/deleteGroup', GroupDeleter),
                                       ('/updateGroup', GroupUpdater),
-                                      ('/groupManager', GroupManager),
-                                      ('/updateGroup', ModuleUpdater),
+                                      ('/groupManager', GroupManager),									  
+                                      ('/addModule', ModuleAdder),
+                                      ('/deleteModule', ModuleDeleter),
+                                      ('/updateModule', ModuleUpdater),
+                                      ('/moduleManager', ModuleManager),
+                                      ('/checkAttendance', AttendanceChecker),
 									#methods to deal with imput
                                       ('/addGroupAjax', GroupAdderAjax),
 									  ('/DeleterAjax', DeleterAjax),
