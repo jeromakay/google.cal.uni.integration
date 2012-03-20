@@ -35,12 +35,12 @@ class ModuleUpdater(webapp.RequestHandler):
 #---Begin Input Handlers---#
 class GroupAdderAjax(webapp.RequestHandler):
     def post(self):
-		from uccal.groups import create
+		from uccal import Groups
 		self.response.headers['Content-Type'] = 'text/plain'
 		try :
 			groupName = self.request.get('groupName')
 			groupDescription = self.request.get('groupDescription')
-			create.createGroup(groupName, groupDescription)
+			Groups.createGroup(groupName, groupDescription)
 			self.response.out.write('ok')
 		except Exception, e:
 			self.response.out.write(e)
