@@ -25,6 +25,7 @@ function fetchAllUsers( callbackOK, callbackNoGroups )
 function fetchData( dataType, callbackOK, callbackNoResults, subDataID ) 
 {
 	showAI( );
+	/*
 	
 	var json;
 	
@@ -96,25 +97,47 @@ function fetchData( dataType, callbackOK, callbackNoResults, subDataID )
 				}
 				// move me end
 				return;
+				
+				*/
+				
+	var params = {
+		"dataType": dataType,
+		"subDataID": subDataID
+	}
 
-	$.getJSON({
+	$.ajax({
 	  type: "POST",
 	  url: 	"fetchers",
 	  data: params }).done( 
-		  function( json ) 
+		  function( msg ) 
 			{
-				hideAI( );
+				json = jQuery.parseJSON( msg );
 
-				if ( msg.toLowerCase( ) == "ok" ) 
+
+				if ( json && json.results ) 
 				{
-					alert( "The \""+ params.groupName +"\" group was successfully added!" );
-					$( '#addGroupName' ).val( '' );
-					$( '#addGroupDescription' ).val( '' );
+					if (  json.results.length == 0 )
+					{
+						if ( callbackNoResults )
+						{
+							callbackNoResults( );
+						}
+					}
+					else if ( callbackOK )
+					{
+						callbackOK( json );
+					}
 				}
 				else
 				{
-					alert( "Error: "+ msg );
+					if ( json && json.error )
+					{
+						alert( "Error: "+ json.error );
+					}
+					else
+					{
+						alert( 'The json you sent, is not valid.' );
+					}
 				}
 			});
-
 }

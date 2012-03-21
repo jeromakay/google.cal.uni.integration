@@ -91,7 +91,7 @@ class FetchersAjax(webapp.RequestHandler):
 			json = fetchers.fetch()
 			self.response.out.write(json)
 		except Exception, e:
-			self.response.out.write(e)
+			self.response.out.write( e )
 
 class GroupAdderAjax(webapp.RequestHandler):
     def post(self):
