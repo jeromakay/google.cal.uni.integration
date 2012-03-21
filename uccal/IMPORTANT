@@ -1,0 +1,46 @@
+import gdata.gauth
+import gdata.contacts.client
+import gdata.calendar.data
+import gdata.calendar.client
+import gdata.acl.data
+import atom.data
+import time
+import data
+
+def add():
+	"""Creates a Google Calander
+		
+		Args:
+			group_name: a na
+			
+	"""
+
+SOURCE_APP_NAME = 'addcaltwj3'
+
+CONSUMER_KEY = 'jeromakay.com'
+CONSUMER_SECRET = '4F9NldoELocv9RWI0esKSqMv'
+
+requestor_id = 'twj2@' + CONSUMER_KEY
+two_legged_oauth_token = gdata.gauth.TwoLeggedOAuthHmacToken(
+	CONSUMER_KEY, CONSUMER_SECRET, requestor_id)
+
+contacts_client = gdata.contacts.client.ContactsClient(source=SOURCE_APP_NAME)
+contacts_client.auth_token = two_legged_oauth_token
+
+calendar_client = gdata.calendar.client.CalendarClient()
+calendar_client.auth_token = two_legged_oauth_token
+
+#for hardcoded password + username
+##calendar_client = gdata.calendar.client.CalendarClient(source=SOURCE_APP_NAME)
+##calendar_client.ClientLogin(data.ADMIN_EMAIL, data.ADMIN_PASSWORD, source ='apps')
+
+# Create the calendar
+calendar = gdata.calendar.data.CalendarEntry()
+calendar.title = atom.data.Title(text='Little League Schedule')
+calendar.summary = atom.data.Summary(text='This calendar contains practice and game times')
+calendar.where.append(gdata.calendar.data.CalendarWhere(value='Oakland'))
+calendar.color = gdata.calendar.data.ColorProperty(value='#2952A3')
+calendar.timezone = gdata.calendar.data.TimeZoneProperty(value='America/Los_Angeles')
+calendar.hidden = gdata.calendar.data.HiddenProperty(value='false')
+
+new_calendar = calendar_client.InsertCalendar(new_calendar=calendar)
