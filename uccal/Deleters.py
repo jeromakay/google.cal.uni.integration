@@ -1,4 +1,7 @@
 def Delete(dataType, EntityID):
 	if dataType == "group":
-		from groups import delete
-		delete.deleteGroup(EntityID)
+		from uccal import Groups
+		Groups.deleteGroup(EntityID)
+	if dataType == "module":
+		from uccal import Modules
+		Modules.deleteModule(EntityID)

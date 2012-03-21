@@ -7,8 +7,10 @@ import atom.data
 import time
 import data
 import string
+from uccal import login
+#from Database import DB
 
-def add(Title, Summary):
+def addModule(Title, Summary):
 	"""Creates a Google Calendar
 		
 		Args:
@@ -18,8 +20,7 @@ def add(Title, Summary):
 	"""
 
 	#for hardcoded password + username
-	calendar_client = gdata.calendar.client.CalendarClient(source=data.SOURCE_APP_NAME)
-	calendar_client.ClientLogin(data.ADMIN_EMAIL, data.ADMIN_PASSWORD, source ='apps')
+	calendar_client = login.adminLogin("calendar")
 
 	# Create the calendar
 	calendar = gdata.calendar.data.CalendarEntry()
@@ -32,7 +33,15 @@ def add(Title, Summary):
 
 	new_calendar = calendar_client.InsertCalendar(new_calendar=calendar)
 	
-def delete(cal_id):
+	cal_id = new_calendar.id.text
+	
+	#this code can be used if you want cal_id not to include the preamble and consumer key
+	#cal_id = string.replace(cal_id, "https://www.google.com/calendar/feeds/default/owncalendars/full/", "")			
+	#cal_id = string.replace(cal_id, "%40jeromakay.com", "")
+	
+	DB.CreateModule(cal_id, name, desc)
+	
+def deleteModule(cal_id):
 	"""Deletes a Google Calendar
 
 		Args:
@@ -40,16 +49,13 @@ def delete(cal_id):
 
 	"""
 	
-	cal_id = "https://www.google.com/calendar/feeds/default/owncalendars/full/" + cal_id
-	
 	#for hardcoded password + username
-	calendar_client = gdata.calendar.client.CalendarClient(source=data.SOURCE_APP_NAME)
-	calendar_client.ClientLogin(data.ADMIN_EMAIL, data.ADMIN_PASSWORD, source ='apps')
+	calendar_client = login.adminLogin("calendar")
 
 	feed = calendar_client.GetOwnCalendarsFeed()
 	for entry in feed.entry:
 		if entry.GetEditLink().href == cal_id:
-			calendar_client.Delete(cal_id)
+			calendar_client.Delete(entry.GetEditLink().href)
 			
 def update(cal_id, Title, Summary):
 	"""Deletes a Google Calendar
@@ -64,8 +70,7 @@ def update(cal_id, Title, Summary):
 	cal_id = string.replace(cal_id, "@", "%40")
 	
 	#for hardcoded password + username
-	calendar_client = gdata.calendar.client.CalendarClient(source=data.SOURCE_APP_NAME)
-	calendar_client.ClientLogin(data.ADMIN_EMAIL, data.ADMIN_PASSWORD, source ='apps')
+	calendar_client = login.adminLogin("calendar")
 
 	feed = calendar_client.GetOwnCalendarsFeed()
 	for entry in feed.entry:

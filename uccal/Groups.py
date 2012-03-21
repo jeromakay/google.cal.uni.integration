@@ -64,7 +64,7 @@ def updateGroup(group_id, new_group_name, new_description='no description given'
 	DB.EditGroup(group_id, new_group_name, new_description, new_group_type)
 	
 	#change the group details
-	groupClient.UpdateGroup(group_id, newGroupDetail, description, email_permission)
+	groupClient.UpdateGroup(group_id, new_group_name, new_description, email_permission)
 
 
 #---method to add a member to a group
