@@ -107,18 +107,20 @@ class GroupAdderAjax(webapp.RequestHandler):
 		
 class GroupUpdaterAjax(webapp.RequestHandler):
     def post(self):
-		from uccal.groups import update
+		from uccal import Groups
 		self.response.headers['Content-Type'] = 'text/plain'
 		try :
 			groupId = self.request.get('groupId')
-			#delete.deleteGroup(groupId)
+			groupName = self.request.get('groupName')
+			groupDescription = self.request.get('groupDescription')
+			Groups.updateGroup(groupId, groupName, groupDescription)
 			self.response.out.write('ok')
 		except Exception, e:
 			self.response.out.write(e)
 
 class GroupManagerAjax(webapp.RequestHandler):
     def post(self):
-		#from uccal.groups import update
+		from uccal import Groups
 		self.response.headers['Content-Type'] = 'text/plain'
 		try :
 			#groupId = self.request.get('groupId')
@@ -129,7 +131,7 @@ class GroupManagerAjax(webapp.RequestHandler):
 		
 class ModuleUpdaterAjax(webapp.RequestHandler):
     def post(self):
-		#from uccal.groups import update
+		from uccal import Groups
 		self.response.headers['Content-Type'] = 'text/plain'
 		try :
 			#groupId = self.request.get('groupId')

@@ -1,5 +1,5 @@
 from Database import DB
 
 def fetch():
-	json = DB.TestListGroups()
+	json = DB.ListGroups()
 	return json
