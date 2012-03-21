@@ -34,8 +34,7 @@ def CreateGroupType(name, desc):
             max_group_type=GroupType.gql("ORDER BY group_type_id DESC").get()
             e.group_type_id=max_group_type.group_type_id+1        
         e.put()
-        while not(e.is_saved()):
-            None
+        
         return e.group_type_id
 
 
@@ -66,8 +65,7 @@ def CreateGroup(gid,
         e.group_type=GroupType.gql("WHERE group_type_id=:1",type_id).get()
         
         e.put()
-        while not(e.is_saved()):
-            None
+        
         return e.group_id
 
 def AddModToGroup(
@@ -130,8 +128,7 @@ def CreateModule(cal_id,
         
         
         e.put()
-        while not(e.is_saved()):
-            None
+        
         return e.module_id
 
 def CreateUser(  gid,
@@ -154,8 +151,7 @@ def CreateUser(  gid,
             e.user_id=max_user.user_id+1
         
         e.put()
-        while not(e.is_saved()):
-            None
+        
         return e.user_id
 
 def DeleteGroup(group_gid
@@ -165,6 +161,8 @@ def DeleteGroup(group_gid
         --group_id - the ID of the group to delete
         """
         e=Group.gql("WHERE group_gid=:1",group_gid).get()
+        for user in User.gql("WHERE :1 IN users_groups",e.key()):
+            user.users_modules.remove(e.key())
         db.delete(e)
         
        
@@ -175,6 +173,8 @@ def DeleteModule(module_id
         --group_id - the ID of the module to delete
         """
         e=Module.gql("WHERE module_id=:1",module_id).get()
+        for group in Group.gql("WHERE :1 IN group_modules",e.key()):
+            group.group_modules.remove(e.key())
         db.delete(e)
         
 
@@ -282,8 +282,7 @@ def ListGroupTypes():
         GroupTypes=GroupType.gql("")    
         for grouptype in GroupTypes:
             json_return['results'].append({'name':grouptype.title,
-                                'id':grouptype.group_type_id,
-                                'desc':grouptype.description})
+                                'id':grouptype.group_type_id})
         return json.dumps(json_return)
             
     
@@ -415,51 +414,3 @@ def RemoveUserFromGroup(
             f.user_groups.remove(e.key())
             f.put()
 
-def TestListGroups():
-##
-    json_encode= {'results': [ 
-                                {'id': 1, 'group_type': 1, 'group_gid': '2dabd109cf892b94e72563da710669c4', 'title': 'LOLOLOLOL', 'description': 'Everyone in Web Systems Engineering'}, 
-                                {'id': 2, 'group_type': 1, 'group_gid': 'ee8efdd53326e275390b866473aac247', 'title': 'food_and_science_ck401_3rd_cs', 'description': 'Everyone in Computer Science Hons'},
-                                {'id': 3, 'group_type': 1, 'group_gid': '9f1319fde74c8ca728ec7452d4e85521', 'title': 'arts_music', 'description': 'Everyone studying Music Hons.'}, 
-                                {'id': 4, 'group_type': 2, 'group_gid': '9459e2b377f25454ee47133c03205076', 'title': 'arts_music_trad_music_lecturers', 'description': 'Lecturers teaching Trad Irish Music.'}, 
-                                {'id': 5, 'group_type': 3, 'group_gid': '7e9cf516ec7fcc55476fe44696cfca66', 'title': 'foot_and_science_microbiology_lab_assist', 'description': 'Labs assistants for the microbiology lectures labs.'},
-                               {'id': 7, 'group_type': 1, 'group_gid': 'wse@jeromakay.com', 'title': 'real_deal', 'description': 'This is the real deal.'} ],
-                                
-                            'groupTypes': [
-                                {'id': 1, 'name': 'students'},
-                                {'id': 2, 'name': 'lecturers'},
-                                {'id': 3, 'name': 'assistants'}
-                            ] }
-
-    return json.dumps(json_encode)
-    
-#print(TestListGroups())
-#CreateGroupType('default','A blank test group type')
-#CreateGroup('1', 'lol', 'pies', 0)
-#ListGroups()
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
