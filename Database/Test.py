@@ -26,6 +26,18 @@ class Test(unittest.TestCase):
     def test_make_user(self):
         DB.CreateUser('0', '0', 'Herp Derpington')
         user_list=json.loads(DB.ListUsers())['results']
+        user=None
+        for each_user in user_list:
+            if each_user['name']=='Herp Derpington':
+                user=each_user
+        self.assertNotEqual(user,None)
+        
+        group_list=json.loads(DB.ListGroups())['results']
+        group=None
+        for each_group in group_list:
+            if each_group['title']=='Test group Alpha':
+                user=each_user
+        DB.AddUserToGroup()
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.Creation']
