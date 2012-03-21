@@ -282,8 +282,7 @@ def ListGroupTypes():
         GroupTypes=GroupType.gql("")    
         for grouptype in GroupTypes:
             json_return['results'].append({'name':grouptype.title,
-                                'id':grouptype.group_type_id,
-                                'desc':grouptype.description})
+                                'id':grouptype.group_type_id})
         return json.dumps(json_return)
             
     
