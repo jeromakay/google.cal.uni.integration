@@ -71,7 +71,7 @@ def CreateGroup(gid,
         return e.group_id
 
 def AddModToGroup(
-                 group_id,
+                 group_gid,
                  module_id):
         """Adds a specified module to a group (or vice-versa)
         inputs:
@@ -80,7 +80,7 @@ def AddModToGroup(
         """
         
         
-        e=Group.gql("WHERE title=:1",group_id).get()
+        e=Group.gql("WHERE group_gid=:1",group_gid).get()
         f=Module.gql("WHERE title=:1",module_id).get()
         
         if f.key() not in e.group_modules:
@@ -89,7 +89,7 @@ def AddModToGroup(
         
 
 def AddUserToGroup(
-                 group_id,
+                 group_gid,
                  user_id):
         """Adds a specified user to a group
         inputs:
@@ -97,7 +97,7 @@ def AddUserToGroup(
         --user_id - the user's google account identifier
         """
         
-        e=Group.gql("WHERE group_id=:1",group_id).get()
+        e=Group.gql("WHERE group_gid=:1",group_gid).get()
         f=User.gql("WHERE user_id=:1",user_id).get()
         
         if e.key() not in f.user_groups:
@@ -166,9 +166,7 @@ def DeleteGroup(group_gid
         """
         e=Group.gql("WHERE group_gid=:1",group_gid).get()
         db.delete(e)
-        while e.is_saved():
-            None
-       
+        
        
 def DeleteModule(module_id
                  ):
@@ -191,11 +189,10 @@ def DeleteUser(user_id
         
         e=User.gql("WHERE user_id=:1",user_id).get()
         db.delete(e)
-        while e.is_saved():
-            None
+       
 
 
-def EditGroup(group_id,
+def EditGroup(group_gid,
               newName=None,
               newDesc=None,
               newType=None
@@ -208,7 +205,7 @@ def EditGroup(group_id,
         --description - if changed, the new description of the group
         --group_type - if changed, the new type of the group
         """
-        e=Group.gql("WHERE group_id=:1",group_id).get()
+        e=Group.gql("WHERE group_gid=:1",group_gid).get()
         if newName is not None:
             e.title=newName
         if newDesc is not None:
@@ -242,13 +239,13 @@ def EditModule(mod_id,
         
         e.put()
 
-def ListGroupedUsers(group_id):
+def ListGroupedUsers(group_gid):
         """Lists the users in a group
         inputs:
         --group_id - the ID of the group to show    
         """
        
-        the_group=Group.gql("WHERE group_id=:1",group_id ).get()
+        the_group=Group.gql("WHERE group_gid=:1",group_gid ).get()
         Users=the_group.users()
         json_return = {'results':[]}
         for person in Users:
@@ -386,7 +383,7 @@ def ListUsersModules(user_id):
             
     
 def RemoveModFromGroup(module_id,
-                 group_id
+                 group_gid
                  ):
         """Deletes a module from a group
         inputs:
@@ -394,7 +391,7 @@ def RemoveModFromGroup(module_id,
         --module_id - the ID of the module to sever
         """
         
-        e=Group.gql("WHERE title=:1",group_id).get()
+        e=Group.gql("WHERE group_gid=:1",group_gid).get()
         f=Module.gql("WHERE title=:1",module_id).get()
         
         if f.key() in e.group_modules:
@@ -403,7 +400,7 @@ def RemoveModFromGroup(module_id,
         
 def RemoveUserFromGroup(
                  user_id,
-                 group_id
+                 group_gid
                  ):
         """Removes a user from the group
         inputs:
@@ -411,7 +408,7 @@ def RemoveUserFromGroup(
         --group_id - the ID of the affected group
         """
         
-        e=Group.gql("WHERE title=:1",group_id).get()
+        e=Group.gql("WHERE group_gid=:1",group_gid).get()
         f=User.gql("WHERE title=:1",user_id).get()
         
         if e.key() in f.user_groups:
