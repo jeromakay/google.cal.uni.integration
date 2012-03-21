@@ -334,9 +334,9 @@ def ListUsers():
         Users=User.gql("")
         json_return = {'results':[]}
         for user in Users:
-            json_return['results'].append({'name':person.name,
-                                    'gID':person.gID,
-                                    'UID':person.uID})
+            json_return['results'].append({'name':user.name,
+                                    'gID':user.gID,
+                                    'UID':user.uID})
         return json.dumps(json_return)
     
 def ListUsersGroups(user_id):
@@ -368,12 +368,13 @@ def ListUsersModules(user_id):
         the_user=User.gql("WHERE user_id=:1",user_id).get()
         groups=[]
         for user_group in the_user.users_groups:
-            groups.append(Group.gql("WHERE key=:1",user_group))
+            groups.append(Group.gql("WHERE __key__=:1",user_group).get())
         modules=[]
         for group in groups:
             for module in group.group_modules:
-                if module not in modules:
-                    modules.append(module)
+                new_module=Module.gql("WHERE __key__=:1",module).get()
+                if new_module not in modules:
+                    modules.append(new_module)
         
         json_return = {'results':[]}
         for module in modules:
