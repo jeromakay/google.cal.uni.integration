@@ -263,15 +263,19 @@ def ListGroupedUsers(group_id):
 def ListGroups():
         """Lists the groups on file
         """
-       
-        json_return = {'results':[]}
-        Groups=Group.gql("")    
+        Groups=Group.gql("")   
+        json_return = {'results':[],'types':[]} 
+        GroupTypes=GroupType.gql("")
         for group in Groups:
             json_return['results'].append({'name':group.title,
                                 'id':group.group_id,
                                 'desc':group.description,
                                 'gid':group.group_gid,
                                 'type':group.group_type})
+        for type in GroupTypes:
+            json_return['types'].append({'name':type.title,
+                                'id':type.group_type_id,
+                                'desc':type.description})
         return json.dumps(json_return)
             
     
@@ -294,13 +298,18 @@ def ListModuleGroups(module_id):
         """
         the_module=Module.gql("WHERE module_id=:1",module_id ).get()
         Groups=the_module.groups()
-        json_return = {'results':[]}
+        json_return = {'results':[],'types':[]} 
+        GroupTypes=GroupType.gql("")
         for group in Groups:
-                json_return['results'].append({'name':group.title,
-                                    'id':group.group_id,
+            json_return['results'].append({'name':group.title,
+                                'id':group.group_id,
                                 'desc':group.description,
                                 'gid':group.group_gid,
                                 'type':group.group_type})
+        for type in GroupTypes:
+            json_return['types'].append({'name':type.title,
+                                'id':type.group_type_id,
+                                'desc':type.description})
         return json.dumps(json_return)
         
     
@@ -338,13 +347,18 @@ def ListUsersGroups(user_id):
         --user_id - the ID of the user to show    
         """
         user=User.gql("WHERE user_id=:1",user_id).get()
-        json_return = {'results':[]}
+        json_return = {'results':[],'types':[]} 
+        GroupTypes=GroupType.gql("")
         for group in user.users_groups:
             json_return['results'].append({'name':group.title,
                                 'id':group.group_id,
                                 'desc':group.description,
                                 'gid':group.group_gid,
                                 'type':group.group_type})
+        for type in GroupTypes:
+            json_return['types'].append({'name':type.title,
+                                'id':type.group_type_id,
+                                'desc':type.description})
         return json.dumps(json_return)
             
 
