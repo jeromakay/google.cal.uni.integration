@@ -1,0 +1,77 @@
+<article>
+
+	<h1>Welcome to UCCalendar Manager</h1>
+
+
+
+	<section>
+
+		<h2>Please log in</h2>
+
+		<p>
+			<label for="Username">Username:</label><br />
+			<input type="text" name="username" id="username" style="width:50%" />
+		</p>
+
+		<p>
+			<label for="Password">Password:</label><br />
+			<input type="password" name="password" id="password" style="width:50%" />
+		</p>
+
+		<p>
+			<input type="submit" id="loginSubmit" value="Login &raquo;" />
+		</p>
+	</form>
+
+<div id="AI"><div>Please wait, loading...</div></div>
+<script type="text/javascript">
+$(window).load(function () 
+{
+	hideAI( );
+	$( '#addGroupName' ).focus( );
+
+	$("#loginSubmit").click( function( ) 
+	{
+		showAI( );
+		var params = { username : $( '#username' ).val( ).trim( ), password: $( '#password' ).val( ).trim( ) };
+		
+		if ( !params.username )  
+		{
+			hideAI( );
+			alert( "username is required." );
+			$( '#username' ).focus( );
+			return false;
+		}
+		
+		if ( !params.password )  
+		{
+			hideAI( );
+			alert( "password is required." );
+			$( '#password' ).focus( );
+			return false;
+		}
+		
+		$.ajax({
+		  type: "POST",
+		  url: 	"login",
+		  data: params }).done( 
+			  function( msg ) 
+				{
+					hideAI( );
+
+					if ( msg.toLowerCase( ) == "ok" ) 
+					{
+						alert( "You have successfully logged in!" );
+						$( '#username' ).val( '' );
+						$( '#password' ).val( '' );
+					}
+					else
+					{
+						alert( "Error: "+ msg );
+					}
+				});
+
+		return false;
+	});
+});
+</script>
