@@ -272,7 +272,7 @@ def ListGroups():
                                 'id':group.group_id,
                                 'desc':group.description,
                                 'gid':group.group_gid,
-                                'type':group_type})
+                                'type':group_type.group_type_id})
         for type in GroupTypes:
             json_return['types'].append({'name':type.title,
                                 'id':type.group_type_id,
@@ -307,7 +307,7 @@ def ListModuleGroups(module_id):
                                 'id':group.group_id,
                                 'desc':group.description,
                                 'gid':group.group_gid,
-                                'type':group_type})
+                                'type':group_type.group_type_id})
         for type in GroupTypes:
             json_return['types'].append({'name':type.title,
                                 'id':type.group_type_id,
@@ -357,7 +357,7 @@ def ListUsersGroups(user_id):
                                 'id':group.group_id,
                                 'desc':group.description,
                                 'gid':group.group_gid,
-                                'type':group_type})
+                                'type':group_type.group_type_id})
         for type in GroupTypes:
             json_return['types'].append({'name':type.title,
                                 'id':type.group_type_id,
