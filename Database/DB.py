@@ -267,7 +267,7 @@ def ListGroups():
         json_return = {'results':[],'types':[]} 
         GroupTypes=GroupType.gql("")
         for group in Groups:
-            group_type=GroupType.gql("WHERE key=:1",group.group_type)
+            group_type=GroupType.gql("WHERE key=:1",group.group_type).get()
             json_return['results'].append({'name':group.title,
                                 'id':group.group_id,
                                 'desc':group.description,
@@ -302,7 +302,7 @@ def ListModuleGroups(module_id):
         json_return = {'results':[],'types':[]} 
         GroupTypes=GroupType.gql("")
         for group in Groups:
-            group_type=GroupType.gql("WHERE key=:1",group.group_type)
+            group_type=GroupType.gql("WHERE key=:1",group.group_type).get()
             json_return['results'].append({'name':group.title,
                                 'id':group.group_id,
                                 'desc':group.description,
@@ -352,7 +352,7 @@ def ListUsersGroups(user_id):
         json_return = {'results':[],'types':[]} 
         GroupTypes=GroupType.gql("")
         for group in user.users_groups:
-            group_type=GroupType.gql("WHERE key=:1",group.group_type)
+            group_type=GroupType.gql("WHERE key=:1",group.group_type).get()
             json_return['results'].append({'name':group.title,
                                 'id':group.group_id,
                                 'desc':group.description,
