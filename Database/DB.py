@@ -158,13 +158,13 @@ def CreateUser(  gid,
             None
         return e.user_id
 
-def DeleteGroup(group_id
+def DeleteGroup(group_gid
                  ):
         """Deletes a group
         inputs:
         --group_id - the ID of the group to delete
         """
-        e=Group.gql("WHERE group_id=:1",group_id).get()
+        e=Group.gql("WHERE group_gid=:1",group_gid).get()
         db.delete(e)
         while e.is_saved():
             None
