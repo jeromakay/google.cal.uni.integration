@@ -250,40 +250,44 @@ def ListGroupedUsers(group_id):
        
         the_group=Group.gql("WHERE group_id=:1",group_id ).get()
         Users=the_group.users()
-        json_return=[]
+        json_return = {'results':[]}
         for person in Users:
             if the_group in person.users_groups:
-                json_return.append({"name":person.name,
-                                    "id":person.user_id,
-                                    "gid":person.gID,
-                                    "uid":person.uID})
+                json_return['results'].append({'name':person.name,
+                                    'id':person.user_id,
+                                    'gid':person.gID,
+                                    'uid':person.uID})
         return json.dumps(json_return)
             
 
 def ListGroups():
         """Lists the groups on file
         """
-       
-        json_return = []
-        Groups=Group.gql("")    
+        Groups=Group.gql("")   
+        json_return = {'results':[],'types':[]} 
+        GroupTypes=GroupType.gql("")
         for group in Groups:
-            json_return.append({"name":group.title,
-                                "id":group.group_id,
-                                "desc":group.description,
-                                "gid":group.group_gid,
-                                "type":group.group_type})
+            json_return['results'].append({'name':group.title,
+                                'id':group.group_id,
+                                'desc':group.description,
+                                'gid':group.group_gid,
+                                'type':group.group_type})
+        for type in GroupTypes:
+            json_return['types'].append({'name':type.title,
+                                'id':type.group_type_id,
+                                'desc':type.description})
         return json.dumps(json_return)
             
     
 def ListGroupTypes():
         """Lists the types of groups on file
         """
-        json_return = []
+        json_return = {'results':[]}
         GroupTypes=GroupType.gql("")    
         for grouptype in GroupTypes:
-            json_return.append({"name":grouptype.title,
-                                "id":grouptype.group_type_id,
-                                "desc":grouptype.description})
+            json_return['results'].append({'name':grouptype.title,
+                                'id':grouptype.group_type_id,
+                                'desc':grouptype.description})
         return json.dumps(json_return)
             
     
@@ -294,13 +298,18 @@ def ListModuleGroups(module_id):
         """
         the_module=Module.gql("WHERE module_id=:1",module_id ).get()
         Groups=the_module.groups()
-        json_return=[]
+        json_return = {'results':[],'types':[]} 
+        GroupTypes=GroupType.gql("")
         for group in Groups:
-                json_return.append({"name":group.title,
-                                    "id":group.group_id,
-                                "desc":group.description,
-                                "gid":group.group_gid,
-                                "type":group.group_type})
+            json_return['results'].append({'name':group.title,
+                                'id':group.group_id,
+                                'desc':group.description,
+                                'gid':group.group_gid,
+                                'type':group.group_type})
+        for type in GroupTypes:
+            json_return['types'].append({'name':type.title,
+                                'id':type.group_type_id,
+                                'desc':type.description})
         return json.dumps(json_return)
         
     
@@ -308,13 +317,13 @@ def ListModules():
         """Lists the modules on file
         """
         
-        json_return = []
+        json_return = {'results':[]}
         Modules=Module.gql("")    
         for module in Modules:
-            json_return.append({"name":module.title,
-                                "id":module.module_id,
-                                "desc":module.description,
-                                "cal_id":module.google_cal_id})
+            json_return['results'].append({'name':module.title,
+                                'id':module.module_id,
+                                'desc':module.description,
+                                'cal_id':module.google_cal_id})
         return json.dumps(json_return)
             
        
@@ -324,12 +333,12 @@ def ListUsers():
         """Lists the users on file
         """
         Users=User.gql("")
-        json_return=[]
+        json_return = {'results':[]}
         for user in Users:
-            json_return.append({"name":user.name,
-                                "id":user.user_id,
-                                "gid":user.gID,
-                                "uid":user.uID})
+            json_return['results'].append({'name':user.name,
+                                'id':user.user_id,
+                                'gid':user.gID,
+                                'uid':user.uID})
         return json.dumps(json_return)
     
 def ListUsersGroups(user_id):
@@ -338,13 +347,18 @@ def ListUsersGroups(user_id):
         --user_id - the ID of the user to show    
         """
         user=User.gql("WHERE user_id=:1",user_id).get()
-        json_return=[]
+        json_return = {'results':[],'types':[]} 
+        GroupTypes=GroupType.gql("")
         for group in user.users_groups:
-            json_return.append({"name":group.title,
-                                "id":group.group_id,
-                                "desc":group.description,
-                                "gid":group.group_gid,
-                                "type":group.group_type})
+            json_return['results'].append({'name':group.title,
+                                'id':group.group_id,
+                                'desc':group.description,
+                                'gid':group.group_gid,
+                                'type':group.group_type})
+        for type in GroupTypes:
+            json_return['types'].append({'name':type.title,
+                                'id':type.group_type_id,
+                                'desc':type.description})
         return json.dumps(json_return)
             
 
@@ -363,12 +377,12 @@ def ListUsersModules(user_id):
                 if module not in modules:
                     modules.append(module)
         
-        json_return=[]
+        json_return = {'results':[]}
         for module in modules:
-            json_return.append({"name":module.title,
-                                "id":module.module_id,
-                                "desc":module.description,
-                                "cal_id":module.google_cal_id})
+            json_return['results'].append({'name':module.title,
+                                'id':module.module_id,
+                                'desc':module.description,
+                                'cal_id':module.google_cal_id})
         return json.dumps(json_return)
             
     
