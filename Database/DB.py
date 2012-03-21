@@ -161,8 +161,6 @@ def DeleteGroup(group_gid
         --group_id - the ID of the group to delete
         """
         e=Group.gql("WHERE group_gid=:1",group_gid).get()
-        for user in User.gql("WHERE :1 IN users_groups",e.key()):
-            user.users_modules.remove(e.key())
         db.delete(e)
         
        
@@ -173,8 +171,6 @@ def DeleteModule(module_id
         --group_id - the ID of the module to delete
         """
         e=Module.gql("WHERE module_id=:1",module_id).get()
-        for group in Group.gql("WHERE :1 IN group_modules",e.key()):
-            group.group_modules.remove(e.key())
         db.delete(e)
         
 
