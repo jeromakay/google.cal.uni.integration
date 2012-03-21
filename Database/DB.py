@@ -267,11 +267,12 @@ def ListGroups():
         json_return = {'results':[],'types':[]} 
         GroupTypes=GroupType.gql("")
         for group in Groups:
+            group_type=GroupType.gql("WHERE key=:1",group.group_type)
             json_return['results'].append({'name':group.title,
                                 'id':group.group_id,
                                 'desc':group.description,
                                 'gid':group.group_gid,
-                                'type':group.group_type})
+                                'type':group_type})
         for type in GroupTypes:
             json_return['types'].append({'name':type.title,
                                 'id':type.group_type_id,
@@ -301,11 +302,12 @@ def ListModuleGroups(module_id):
         json_return = {'results':[],'types':[]} 
         GroupTypes=GroupType.gql("")
         for group in Groups:
+            group_type=GroupType.gql("WHERE key=:1",group.group_type)
             json_return['results'].append({'name':group.title,
                                 'id':group.group_id,
                                 'desc':group.description,
                                 'gid':group.group_gid,
-                                'type':group.group_type})
+                                'type':group_type})
         for type in GroupTypes:
             json_return['types'].append({'name':type.title,
                                 'id':type.group_type_id,
@@ -350,11 +352,12 @@ def ListUsersGroups(user_id):
         json_return = {'results':[],'types':[]} 
         GroupTypes=GroupType.gql("")
         for group in user.users_groups:
+            group_type=GroupType.gql("WHERE key=:1",group.group_type)
             json_return['results'].append({'name':group.title,
                                 'id':group.group_id,
                                 'desc':group.description,
                                 'gid':group.group_gid,
-                                'type':group.group_type})
+                                'type':group_type})
         for type in GroupTypes:
             json_return['types'].append({'name':type.title,
                                 'id':type.group_type_id,
@@ -434,11 +437,13 @@ def TestListGroups():
                                 {'id': 2, 'name': 'lecturers'},
                                 {'id': 3, 'name': 'assistants'}
                             ] }
-    
+
     return json.dumps(json_encode)
     
-        
-        
+#print(TestListGroups())
+#CreateGroupType('default','A blank test group type')
+#CreateGroup('1', 'lol', 'pies', 0)
+#ListGroups()
         
         
         
