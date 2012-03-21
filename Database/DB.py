@@ -257,8 +257,7 @@ def ListGroupedUsers(group_id):
                                     "id":person.user_id,
                                     "gid":person.gID,
                                     "uid":person.uID})
-        json.dumps(json_return)
-        return json_return
+        return json.dumps(json_return)
             
 
 def ListGroups():
@@ -273,9 +272,8 @@ def ListGroups():
                                 "desc":group.description,
                                 "gid":group.group_gid,
                                 "type":group.group_type})
-        json.dumps(json_return)
+        return json.dumps(json_return)
             
-        return json_return
     
 def ListGroupTypes():
         """Lists the types of groups on file
@@ -286,9 +284,8 @@ def ListGroupTypes():
             json_return.append({"name":grouptype.title,
                                 "id":grouptype.group_type_id,
                                 "desc":grouptype.description})
-        json.dumps(json_return)
+        return json.dumps(json_return)
             
-        return json_return
     
 def ListModuleGroups(module_id):
         """Lists the groups attatched to a module
@@ -304,8 +301,8 @@ def ListModuleGroups(module_id):
                                 "desc":group.description,
                                 "gid":group.group_gid,
                                 "type":group.group_type})
-        json.dumps(json_return)
-        return json_return
+        return json.dumps(json_return)
+        
     
 def ListModules():
         """Lists the modules on file
@@ -318,9 +315,9 @@ def ListModules():
                                 "id":module.module_id,
                                 "desc":module.description,
                                 "cal_id":module.google_cal_id})
-        json.dumps(json_return)
+        return json.dumps(json_return)
             
-        return json_return
+       
 
     
 def ListUsers():
@@ -333,8 +330,7 @@ def ListUsers():
                                 "id":user.user_id,
                                 "gid":user.gID,
                                 "uid":user.uID})
-        json.dumps(json_return)
-        return json_return
+        return json.dumps(json_return)
     
 def ListUsersGroups(user_id):
         """Lists the groups a user is in
@@ -349,8 +345,7 @@ def ListUsersGroups(user_id):
                                 "desc":group.description,
                                 "gid":group.group_gid,
                                 "type":group.group_type})
-        json.dumps(json_return)
-        return json_return
+        return json.dumps(json_return)
             
 
 def ListUsersModules(user_id):
@@ -374,9 +369,8 @@ def ListUsersModules(user_id):
                                 "id":module.module_id,
                                 "desc":module.description,
                                 "cal_id":module.google_cal_id})
-        json.dumps(json_return)
+        return json.dumps(json_return)
             
-        return json_return
     
 def RemoveModFromGroup(module_id,
                  group_id
@@ -411,7 +405,24 @@ def RemoveUserFromGroup(
             f.user_groups.remove(e.key())
             f.put()
 
-
+def TestListGroups():
+    json_encode=json.loads("""{results: [ 
+                                {id: 1, group_type: 1, group_gid: "2dabd109cf892b94e72563da710669c4", title: "food_and_science_ck401_3rd_web_sys_eng", description: "Everyone in Web Systems Engineering" }, 
+                                {id: 2, group_type: 1, group_gid: "ee8efdd53326e275390b866473aac247", title: "food_and_science_ck401_3rd_cs", description: "Everyone in Computer Science Hons" }, 
+                                {id: 3, group_type: 1, group_gid: "9f1319fde74c8ca728ec7452d4e85521", title: "arts_music", description: "Everyone studying Music Hons." }, 
+                                {id: 4, group_type: 2, group_gid: "9459e2b377f25454ee47133c03205076", title: "arts_music_trad_music_lecturers", description: "Lecturers teaching Trad Irish Music." }, 
+                                {id: 5, group_type: 3, group_gid: "7e9cf516ec7fcc55476fe44696cfca66", title: "foot_and_science_microbiology_lab_assist", description: "Labs assistants for the microbiology lecture's labs." },
+                                {id: 6, group_type: 1, group_gid: "f94d66f27497e84e10b2843ee718a078", title: "erasmus_2011_Juan_Carlos_Montero_1 09868111", description: "Erasmus 2011 student, Juan Carlos Montero." },
+                                {id: 7, group_type: 1, group_gid: "wse@jeromakay.com", title: "real_deal", description: "This is the real deal." } ],
+                                
+                            groupTypes: [
+                                { id: 1, name: "students" },
+                                { id: 2, name: "lecturers" },
+                                { id: 3, name: "assistants" }
+                            ] }""")
+    
+    return json.dumps(json_encode)
+    
         
         
         
