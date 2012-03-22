@@ -160,7 +160,7 @@ class ModuleUpdaterAjax(webapp.RequestHandler):
 		except Exception, e:
 			self.response.out.write(e)
 
-class Login(webapp.RequestHandler):
+"""class Login(webapp.RequestHandler):
     def post(self):
         self.response.headers['Content-Type'] = 'text/plain'
         username = self.request.get('username')
@@ -180,7 +180,7 @@ class Login(webapp.RequestHandler):
         
     def get(self):
         #todo, load the html template for login form
-        TemplateMaker.make( self, "Login", "root/login" )
+        TemplateMaker.make( self, "Login", "root/login" )"""
 	
 #------------------End modules input Handlers--------------#
 class Sync(webapp.RequestHandler):
@@ -243,7 +243,7 @@ application = webapp.WSGIApplication(
 									#methods to deal with input
 									  ('/DeleterAjax', DeleterAjax),
 									  ('/fetchers', FetchersAjax),
-									  ('/login', Login),
+									  #('/login', Login),
                                       ('/addGroupAjax', GroupAdderAjax),
 									  ('/updateGroupAjax', GroupUpdaterAjax),
                                       ('/groupManagerAjax', GroupManagerAjax),
