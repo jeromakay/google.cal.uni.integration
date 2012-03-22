@@ -36,8 +36,23 @@ class Test(unittest.TestCase):
         group=None
         for each_group in group_list:
             if each_group['title']=='Test group Alpha':
+                group=each_group
+        self.assertNotEqual(group,None)
+        
+        DB.AddUserToGroup(group['gID'],user['gID'])
+        
+        user_list=json.loads(DB.ListUsers())['results']
+        user=None
+        for each_user in user_list:
+            if each_user['name']=='Herp Derpington':
                 user=each_user
-        DB.AddUserToGroup()
+        self.assertNotEqual(user,None)
+        
+        self.assertGreater(len(json.loads(DB.ListUsersGroups(user['gid']))['results']),0)
+        
+    def test_make_module(self):
+        DB.CreateModule('lolpies', 'CS7070', 'How to do shit in OO databases')
+        
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.Creation']
