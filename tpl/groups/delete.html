@@ -64,8 +64,7 @@ $(window).load(function ()
 			$.each( rowsArray, function( i, v )
 
 			{
-
-				var el = $('<li id="group_item_'+ v.id +'"><a href="#" id="group_id_'+ v.id +'">'+ v.title +'<span class="value">'+ v.id +'</span></a></li>');
+				var el = $('<li id="group_item_'+ v.group_gid +'"><a href="#" id="group_id_'+ v.group_gid +'">'+ v.title +'<span class="value">'+ v.group_gid +'</span></a></li>');
 
 				el.appendTo( "#groups-list" );
 

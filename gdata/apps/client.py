@@ -48,7 +48,8 @@ class AppsClient(gdata.client.GDClient):
     self.domain = domain
 
   def _baseURL(self):
-    return '/a/feeds/%s' % self.domain
+   # return '/a/feeds/%s' % self.domain
+   return 'https://apps-apis.google.com/a/feeds/%s' % self.domain
 
   def _userURL(self):
     return '%s/user/%s' % (self._baseURL(), self.api_version)

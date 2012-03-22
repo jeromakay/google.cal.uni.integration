@@ -32,23 +32,23 @@ class GroupManager(webapp.RequestHandler):
 #--------Module handlers---------#
 class ModuleAdder(webapp.RequestHandler):
     def get(self):
-		TemplateMaker.make( self, "Add Modules", "module/add" )
+		TemplateMaker.make( self, "Add Modules", "modules/add" )
 
 class ModuleDeleter(webapp.RequestHandler):
     def get(self):
-		TemplateMaker.make( self, "Delete Modules", "module/delete" )
+		TemplateMaker.make( self, "Delete Modules", "modules/delete" )
 
 class ModuleUpdater(webapp.RequestHandler):
     def get(self):
-		TemplateMaker.make( self, "Update Modules", "module/update" )
+		TemplateMaker.make( self, "Update Modules", "modules/update" )
 
 class AttendanceChecker(webapp.RequestHandler):
     def get(self):
-		TemplateMaker.make( self, "Check Module Attendance", "module/checkAttendance" )
+		TemplateMaker.make( self, "Check Module Attendance", "modules/checkAttendance" )
 
 class ModuleManager(webapp.RequestHandler):
     def get(self):
-		TemplateMaker.make( self, "Manage Modules/Groups", "module/groupManager" )
+		TemplateMaker.make( self, "Manage Modules/Groups", "modules/groupManager" )
 
 #--------Students handlers----------#
 class StudentBrowser(webapp.RequestHandler):
@@ -70,7 +70,8 @@ class StudentRemover(webapp.RequestHandler):
 #---End Page Display Handlers---#
 
 #---Begin Input Handlers---#
-		
+
+#------handles generic deletions------#		
 class DeleterAjax(webapp.RequestHandler):
     def post(self):
 		from uccal import Deleters
@@ -82,17 +83,20 @@ class DeleterAjax(webapp.RequestHandler):
 			self.response.out.write('ok')
 		except Exception, e:
 			self.response.out.write(e)
-		
+			
+#---Handles fetching data from database for dropdowns---#
 class FetchersAjax(webapp.RequestHandler):
     def post(self):
 		from uccal import fetchers
 		self.response.headers['Content-Type'] = 'text/plain'
 		try :
-			json = fetchers.fetch()
+			dataType = self.request.get('dataType')
+			json = fetchers.fetch( dataType )
 			self.response.out.write(json)
 		except Exception, e:
 			self.response.out.write( e )
 
+#------------------Begin groups input handlers-------------#
 class GroupAdderAjax(webapp.RequestHandler):
     def post(self):
 		from uccal import Groups
@@ -128,10 +132,24 @@ class GroupManagerAjax(webapp.RequestHandler):
 			self.response.out.write('ok')
 		except Exception, e:
 			self.response.out.write(e)
-		
+#------------------End groups input handlers---------------#
+
+#------------------Begin modules input handlers------------#
+class ModuleAdderAjax(webapp.RequestHandler):
+    def post(self):
+		from uccal import Modules
+		self.response.headers['Content-Type'] = 'text/plain'
+		try :
+			moduleName = self.request.get('moduleName')
+			moduleDescription = self.request.get('moduleDescription')
+			Modules.addModule(moduleName, moduleDescription)
+			self.response.out.write('ok')
+		except Exception, e:
+			self.response.out.write(e)
+
 class ModuleUpdaterAjax(webapp.RequestHandler):
     def post(self):
-		from uccal import Groups
+		from uccal import Modules
 		self.response.headers['Content-Type'] = 'text/plain'
 		try :
 			#groupId = self.request.get('groupId')
@@ -140,12 +158,25 @@ class ModuleUpdaterAjax(webapp.RequestHandler):
 		except Exception, e:
 			self.response.out.write(e)
 	
-#---End input Handlers---#
+#------------------End modules input Handlers--------------#
+class Test(webapp.RequestHandler):
+    def get(self):
+		from uccal import Students
+		self.response.headers['Content-Type'] = 'text/plain'
+		try :
+			#students = Students.getAllMembers()
+			ok = Students.sync()
+			self.response.out.write(ok)
+		except Exception, e:
+			self.response.out.write(e)
 	
 #model view controler
 application = webapp.WSGIApplication(
 									#methods to display pages
                                      [('/', Main),
+									 
+									 ('/test', Test),
+									#
                                       ('/addGroup', GroupAdder),
                                       ('/deleteGroup', GroupDeleter),
                                       ('/updateGroup', GroupUpdater),
@@ -161,13 +192,19 @@ application = webapp.WSGIApplication(
                                       ('/studentAdder', StudentAdder),
                                       ('/studentErasmus', StudentErasmus),
                                       ('/studentRemover', StudentRemover),
-									#methods to deal with imput
+									#methods to deal with input
 									  ('/DeleterAjax', DeleterAjax),
 									  ('/fetchers', FetchersAjax),
+									#
                                       ('/addGroupAjax', GroupAdderAjax),
 									  ('/updateGroupAjax', GroupUpdaterAjax),
                                       ('/groupManagerAjax', GroupManagerAjax),
-									  ('/updateGroupAjax', ModuleUpdaterAjax)],									  
+									#
+									  ('/AddModuleAjax', ModuleAdderAjax),
+									  ('/updateGroupAjax', ModuleUpdaterAjax)
+									  #('/AddGroupAjax', ModuleAdderAjax),
+									  #('/AddGroupAjax', ModuleAdderAjax),
+									  ],									  
                                      debug=True)
 
 def main():
