@@ -202,12 +202,18 @@ class Test(webapp.RequestHandler):
 		from Database import DB
 		self.response.headers['Content-Type'] = 'text/plain'
 		try :
-			group_id = "24bce08be18b388b2408dd33816fbea9"
-			member_id = "bw2@jeromakay.com"
+			#user_id = "twj2"
+			cal_id = "jeromakay.com_9num3rgpu2b3snt3pp4tfarahc%40group.calendar.google.com"
+			group_id = "e38f9ad9371f9fe00d7c3f78b181f814"
+			#member_id = "vg2@jeromakay.com"
 			#students = Students.getAllMembers()
 			#Students.sync()
 			#json = DB.ListUsersUIDs()'
-			Groups.addGroupMember(group_id, member_id)
+			#Groups.addGroupMember(group_id, member_id)
+			#Students.subscribe(user_id, cal_id)
+			Students.subscribeGroup(group_id, cal_id)
+			#ret = Students.getGroupMembers(group_id)
+			#self.response.out.write(ret)
 			self.response.out.write('ok')
 		except Exception, e:
 			self.response.out.write(e)

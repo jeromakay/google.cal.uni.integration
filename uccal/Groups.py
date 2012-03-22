@@ -78,7 +78,7 @@ def addGroupMember (group_id, member_id):
 	"""
 	
 	#deal with database here
-	DB.AddUserToGroup(group_id, member_id)
+	#DB.AddUserToGroup(group_id, member_id)
 	
 	#create client object
 	groupClient = login.adminLogin()
