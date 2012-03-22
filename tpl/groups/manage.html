@@ -1,4 +1,4 @@
-<h1>Groups management</h1>
+	<h1>Groups management</h1>
 
 	
 
@@ -60,7 +60,7 @@
 
 	
 
-	<div id="members-list"></div>
+	<ul id="members-list"></ul> 
 
 	
 
@@ -72,143 +72,125 @@
 
 <script type="text/javascript" src="js/jquery.autoSuggest.js"></script>
 
+<script type="text/javascript" src="js/ui.core.min.js"></script>
+
+<script type="text/javascript" src="js/ui.sortable.min.js"></script>
+
+
+
 <script type="text/javascript">
+
+var selectedUserGIDs = [];
+
+var userCnt = 0;
+
+
 
 $(window).load(function () 
 
 {
 
-	hideAI( );
-
-	fetchGroups( function( json ) 
-
-	{
-
-		var rowsArray = json.results;
 
 
+	$("#members-list").sortable({ 
 
-		if ( rowsArray.length > 0 )
+		handle : '.handle', 
+
+		update : function () 
 
 		{
 
-			$.each( rowsArray, function( i, v )
+			$("input#test-log").val( $('#members-list').sortable('serialize') ); 
 
-			{
+		} 
 
-				var el = $('<li id="group_item_'+ v.group_gid +'"><a href="#" id="group_id_'+ v.group_gid +'">'+ v.title +'<span class="value">'+ v.group_gid +'</span></a></li>');
-
-				el.appendTo( "#groups-list" );
-
-			});
+	}); 
 
 
 
-			initDropDowns( "groups-list-drop-down", function( )
+	hideAI( );
 
-			{
 
-				$( "#add-user-form" ).show( );
 
-				$( "#no-users-available-holder").hide( );
+	fetchGroups( fetchGroupsCallbackOK, fetchGroupsCallbackNoResults );
 
-				var groupID = $( "#groups-list-drop-down" ).find("dt a span.value").html( );
 
-				
+
+	$( "#addUserSubmit" ).click( function( )
+
+	{
+
+		var selectionsUL = $( "#as-selections-newGroupUsers" );
+
+
+
+		if ( selectionsUL )
+
+		{
+
+			var selectedHTML = selectionsUL.find( "li span.value" );
 
 			
 
-				// let's fetch the users for this selected group
+			$.each( selectedHTML, function( i, v )
 
-				fetchAllUsers( function( usersJson ) 
+			{
 
-				{	
+				selectedUserGIDs[ userCnt ] = v.innerHTML.trim( );
 
-					var usersArray = usersJson.results;
-
-
-
-					//var users_autosuggest_data = {items: []};
-
-					var users_autosuggest_data = [];
-
-					
-
-					$.each( usersArray, function( i, v )
-
-					{
-
-						//users_autosuggest_data.items[i] = {value: v.gID, name: v.name + " ( "+ v.UID +")<span class='value'>"+ v.gID +"</span>" };
-
-						users_autosuggest_data[i] = {value: v.gID, name: v.name + " ( "+ v.UID +")" };
-
-					});
-
-					
-
-					// tie the autosuggest feature to the users addition field
-
-					$( function( )
-
-					{
-
-						$("#addUserName").autoSuggest( users_autosuggest_data, 
-
-						{
-
-							startText: "Type a name here to get suggestions", 
-
-							emptyText: "No users matching your entry found inside Google Apps.",
-
-							selectedItemProp: "name", 
-
-							searchObjProps: "name",
-
-							neverSubmit: true,
-
-							asHtmlID: "newGroupUsers"
-
-						});
-
-					});
-
-
-
-					//alert(  usersArray );
-
-					hideAI( );
-
-					
-
-					// todo, if we have no users, show a paragraph saying there are no users, in the function below, not in this one
-
-					
-
-					//todo, create a table which will be populated inside the DIV#members-list
-
-					
-
-					// todo, if a different group is selected, make sure that the old list is cleared, or the "no users" paragraph dissapears as well.
-
-					
-
-				}, function( )
-
-				{
-
-					$( "#add-user-form" ).hide( );
-
-					$( "#no-users-available-holder").show( );
-
-				});
-
-				
-
-				
+				userCnt++;
 
 			});
 
 		}
+
+		
+
+		
+
+		if ( selectedUserGIDs.length <= 0 )
+
+		{
+
+			alert( "Please add some users first!" );
+
+			return;
+
+		}
+
+		
+
+		showAI( );
+
+		
+
+		var usersList = "";
+
+		
+
+		$.each( selectedUserGIDs, function( i, v )
+
+		{
+
+			usersList += v +",";
+
+		});
+
+		
+
+		usersList.replace( /,$/, "");
+
+		
+
+		var groupID = $( "#groups-list-drop-down" ).find("dt a span.value").html( );
+
+		
+
+		// START ajax on success response handler 
+
+
+
+		var msg = "ok";
 
 
 
@@ -216,23 +198,285 @@ $(window).load(function ()
 
 		
 
-		$( "#addUserSubmit" ).click( function( )
+		if ( msg.toLowerCase( ) == "ok" ) 
 
 		{
 
-			alert( $( "#newGroupUsers" ).val( ) );
+			$( "#members-list" ).empty( );
 
-		});
+			showAI( );
+
+			fetchGroupUsers( groupID, fetchGroupUsersCallbackOK, fetchGroupUsersCallbackNoResults );
+
+		}
+
+		else
+
+		{
+
+			alert( "Error: "+ msg );
+
+		}
+
+
+
+		// END ajax on success response handler 
 
 		
 
-	}, function( ) {
+		return;
 
-		alert( "no groups, callback!" );
+		
+
+		$.ajax({
+
+		  type: "POST",
+
+		  url: 	"manageGroupUsers",
+
+		  data: params }).done( 
+
+			  function( msg ) 
+
+				{
+
+					hideAI( );
+
+
+
+					if ( msg.toLowerCase( ) == "ok" ) 
+
+					{
+
+						alert( "The '"+ params.groupName +"' group was successfully added!" );
+
+						$( '#addGroupName' ).val( '' );
+
+						$( '#addGroupDescription' ).val( '' );
+
+					}
+
+					else
+
+					{
+
+						alert( "Error: "+ msg );
+
+					}
+
+				});
+
+		
 
 	});
 
+	
+
 });
+
+
+
+function fetchGroupUsersCallbackOK( usersJSON )
+
+{	
+
+	var rowsArray = usersJSON.results;
+
+
+
+	if ( rowsArray.length > 0 )
+
+	{
+
+		$.each( rowsArray, function( i, v )
+
+		{
+
+			var el = $( '<li id="group_user_'+ v.gID +'">' +
+
+						'<a href="#" class="handle">'+ v.name +'</a>' +
+
+						'<a href="#" class="delete" onclick="removeUserFromGroup(\''+ v.gID +'\');return false;">x</a>' +
+
+					 '</li>' );
+
+			el.appendTo( "#members-list" );
+
+		});
+
+	}
+
+
+
+	selectedUserGIDs = [];
+
+	userCnt = 0;
+
+
+
+	hideAI( );
+
+}
+
+
+
+function fetchGroupsCallbackOK( json )
+
+{
+
+	var rowsArray = json.results;
+
+
+
+	if ( rowsArray.length > 0 )
+
+	{
+
+		$.each( rowsArray, function( i, v )
+
+		{
+
+			var el = $('<li id="group_item_'+ v.group_gid +'"><a href="#" id="group_id_'+ v.group_gid +'">'+ v.title +'<span class="value">'+ v.group_gid +'</span></a></li>');
+
+			el.appendTo( "#groups-list" );
+
+		});
+
+
+
+		initDropDowns( "groups-list-drop-down", function( )
+
+		{
+
+			$( "#members-list" ).empty( );
+
+			$( "#add-user-form" ).show( );
+
+			$( "#no-users-available-holder").hide( );
+
+			var groupID = $( "#groups-list-drop-down" ).find("dt a span.value").html( );
+
+			
+
+			showAI( );
+
+			fetchGroupUsers( groupID, fetchGroupUsersCallbackOK, fetchGroupUsersCallbackNoResults );
+
+			
+
+		
+
+			// let's fetch the users for this selected group
+
+			fetchAllUsers( function( usersJson ) 
+
+			{	
+
+				var usersArray = usersJson.results;
+
+
+
+				//var users_autosuggest_data = {items: []};
+
+				var users_autosuggest_data = [];
+
+				
+
+				$.each( usersArray, function( i, v )
+
+				{
+
+					users_autosuggest_data[i] = {value: v.gID, name: v.name + " ( "+ v.UID +")<span class='value'>"+ v.gID +"</span>" };
+
+				});
+
+				
+
+				// tie the autosuggest feature to the users addition field
+
+				$( function( )
+
+				{
+
+					$("#addUserName").autoSuggest( users_autosuggest_data, 
+
+					{
+
+						startText: "Type a name here to get suggestions", 
+
+						emptyText: "No users matching your entry found inside Google Apps.",
+
+						selectedItemProp: "name", 
+
+						searchObjProps: "name",
+
+						neverSubmit: true,
+
+						asHtmlID: "newGroupUsers"
+
+					});
+
+				});
+
+
+
+				hideAI( );
+
+				
+
+			}, function( )
+
+			{
+
+				$( "#add-user-form" ).hide( );
+
+				$( "#no-users-available-holder").show( );
+
+			});
+
+		});
+
+	}
+
+
+
+	hideAI( );
+
+}
+
+
+
+function removeUserFromGroup( userID )
+
+{
+
+	var groupID = $( "#groups-list-drop-down" ).find("dt a span.value").html( );
+
+	// todo, delete this user for real, for now it's just the prototype
+
+	$( "#group_user_"+ userID ).remove( );
+
+}
+
+
+
+function fetchGroupsCallbackNoResults( ) 
+
+{
+
+	alert( "no groups, callback!" );
+
+}
+
+
+
+function fetchGroupUsersCallbackNoResults( ) 
+
+{
+
+	alert( "Something went wrong, it seems the users were not added, the users table is empty!" );
+
+}
 
 
 
