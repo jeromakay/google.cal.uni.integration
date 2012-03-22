@@ -6,6 +6,7 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.ext.webapp import template
 import string
+from uccal import data
 
 #--Begin Page Display Handlers---#
 class Main(webapp.RequestHandler):
@@ -100,8 +101,8 @@ class Login(webapp.RequestHandler):
         username = self.request.get('username')
         password = self.request.get('password')
         config=open('login.config')
-        proper_username=string.replace(config.readline(),'\n','')
-        proper_password=string.replace(config.readline(),'\n','')
+        proper_username=data.ADMIN_EMAIL
+        proper_password=data.ADMIN_PASSWORD
         if username != proper_username:
             self.response.out.write('incorrect username.')
         elif password != proper_password:
