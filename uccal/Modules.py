@@ -22,7 +22,7 @@ def addModule(Title, Summary):
 	#for hardcoded password + username
 	calendar_client = login.adminLogin("calendar")
 	
-	Title = "UCC MODULE" + Title
+	Title = "UCC MODULE " + Title
 
 	# Create the calendar
 	calendar = gdata.calendar.data.CalendarEntry()
