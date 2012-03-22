@@ -10,7 +10,7 @@ function fetchModules( callbackOK, callbackNoGroups )
 
 function fetchGroupUsers( groupID, callbackOK, callbackNoGroups ) 
 {
-	fetchData( "users", callbackOK, callbackNoGroups, groupID )
+	fetchData( "users", groupID, callbackOK, callbackNoGroups )
 }
 
 function fetchAllUsers( callbackOK, callbackNoGroups ) 

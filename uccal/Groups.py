@@ -68,8 +68,8 @@ def updateGroup(group_id, new_group_name, new_description='no description given'
 
 
 #---method to add a member to a group
-def addGroupMember (group_id, members_array):
-	"""Adds the array of members to the group
+def addGroupMember (group_id, member_id):
+	"""Adds the members to the group
 	
 		Args:
 			group_id: the ID of the group to update
@@ -78,14 +78,13 @@ def addGroupMember (group_id, members_array):
 	"""
 	
 	#deal with database here
-	DB.EditGroup(group_id, new_group_name, new_description, new_group_type)
+	DB.AddUserToGroup(group_id, member_id)
 	
 	#create client object
 	groupClient = login.adminLogin()
 	
 	#add users to the group
-	for member_id in members_array:
-		groupClient.AddMemberToGroup(group_id, member_id)
+	groupClient.AddMemberToGroup(group_id, member_id)
 		
 #---method to delete a member from a group---
 def deleteGroupMember (group_id, members_array):

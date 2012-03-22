@@ -128,8 +128,9 @@ class GroupManagerAjax(webapp.RequestHandler):
 		from uccal import Groups
 		self.response.headers['Content-Type'] = 'text/plain'
 		try :
-			#groupId = self.request.get('groupId')
-			#delete.deleteGroup(groupId)
+			groupId = self.request.get('groupId')
+			member_id = self.request.get('')#<-----------------insert memberid
+			Groups.addGroupMember(groupId, member_id)
 			self.response.out.write('ok')
 		except Exception, e:
 			self.response.out.write(e)
@@ -182,14 +183,32 @@ class Login(webapp.RequestHandler):
         TemplateMaker.make( self, "Login", "root/login" )
 	
 #------------------End modules input Handlers--------------#
+class Sync(webapp.RequestHandler):
+    def get(self):
+		from uccal import Students
+		from uccal import Groups
+		from Database import DB
+		self.response.headers['Content-Type'] = 'text/plain'
+		try :
+			Students.sync()
+			self.response.out.write('ok')
+		except Exception, e:
+			self.response.out.write(e)
+			
 class Test(webapp.RequestHandler):
     def get(self):
 		from uccal import Students
+		from uccal import Groups
+		from Database import DB
 		self.response.headers['Content-Type'] = 'text/plain'
 		try :
+			group_id = "24bce08be18b388b2408dd33816fbea9"
+			member_id = "bw2@jeromakay.com"
 			#students = Students.getAllMembers()
-			ok = Students.sync()
-			self.response.out.write(ok)
+			#Students.sync()
+			#json = DB.ListUsersUIDs()'
+			Groups.addGroupMember(group_id, member_id)
+			self.response.out.write('ok')
 		except Exception, e:
 			self.response.out.write(e)
 	
@@ -197,7 +216,7 @@ class Test(webapp.RequestHandler):
 application = webapp.WSGIApplication(
 									#methods to display pages
                                      [('/', Main),
-									 
+									 ('/sync', Sync),
 									 ('/test', Test),
 									#
                                       ('/addGroup', GroupAdder),

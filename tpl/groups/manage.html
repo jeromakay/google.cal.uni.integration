@@ -119,7 +119,7 @@ $(window).load(function ()
 	$( "#addUserSubmit" ).click( function( )
 
 	{
-
+	
 		var selectionsUL = $( "#as-selections-newGroupUsers" );
 
 
@@ -232,7 +232,7 @@ $(window).load(function ()
 
 		  type: "POST",
 
-		  url: 	"manageGroupUsers",
+		  url: 	"groupManagerAjax",
 
 		  data: params }).done( 
 
@@ -248,11 +248,11 @@ $(window).load(function ()
 
 					{
 
-						alert( "The '"+ params.groupName +"' group was successfully added!" );
+						alert( "successfully added!" );
 
-						$( '#addGroupName' ).val( '' );
+						//$( '#addGroupName' ).val( '' );
 
-						$( '#addGroupDescription' ).val( '' );
+						//$( '#addGroupDescription' ).val( '' );
 
 					}
 
@@ -356,7 +356,7 @@ function fetchGroupsCallbackOK( json )
 
 			var groupID = $( "#groups-list-drop-down" ).find("dt a span.value").html( );
 
-			
+			alert(groupID)
 
 			showAI( );
 

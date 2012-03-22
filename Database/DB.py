@@ -98,8 +98,8 @@ def AddUserToGroup(
         e=Group.gql("WHERE group_gid=:1",group_gid).get()
         f=User.gql("WHERE gID=:1",user_gid).get()
         
-        if e.key() not in f.user_groups:
-            f.user_groups.append(e.key())
+        if e.key() not in f.users_groups:
+            f.users_groups.append(e.key())
             f.put()
         
         
@@ -330,6 +330,15 @@ def ListUsers():
                                     'gID':user.gID,
                                     'UID':user.uID})
         return json.dumps(json_return)
+		
+def ListUsersUIDs():
+        """Lists the users on file
+        """
+        Users=User.gql("")
+        list=[]
+        for user in Users:
+            list.append(user.uID)
+        return list
     
 def ListUsersGroups(user_gid):
         """Lists the groups a user is in
@@ -406,7 +415,7 @@ def RemoveUserFromGroup(
         e=Group.gql("WHERE group_gid=:1",group_gid).get()
         f=User.gql("WHERE gID=:1",user_gid).get()
         
-        if e.key() in f.user_groups:
-            f.user_groups.remove(e.key())
+        if e.key() in f.users_groups:
+            f.users_groups.remove(e.key())
             f.put()
 

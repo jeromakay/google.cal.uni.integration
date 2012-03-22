@@ -12,8 +12,14 @@ def getAllMembers():
 	
 	Users = client.RetrieveAllUsers()
 	for entry in Users.entry:
-		users_ret.append(entry.title.text)
+		users_ret.append(entry.title.text + " lastname" + "("+ entry.title.text + "@" + data.CONSUMER_KEY +")")
 	return users_ret
+	
+def getGroupMembers():
+	
+	client = login.adminLogin("student")
+	
+	
 
 def sync():
 
@@ -23,8 +29,12 @@ def sync():
 	client = login.adminLogin("student")
 	
 	Users = client.RetrieveAllUsers()
+	
+	existing_users = DB.ListUsersUIDs()
+	
 	for entry in Users.entry:
 		name = entry.title.text + " lastname"
 		gid =  entry.title.text + "@" + data.CONSUMER_KEY
-		uid = entry.title.text		
-		DB.CreateUser( gid, uid, name )
+		uid = entry.title.text	
+		if uid not in existing_users:
+			DB.CreateUser( gid, uid, name )

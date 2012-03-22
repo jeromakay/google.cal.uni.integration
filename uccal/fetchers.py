@@ -5,4 +5,8 @@ def fetch( dataType, subDataID=None ):
 		return DB.ListGroups()
 	if dataType == "modules":
 		return DB.ListModules()
-	return json
+	if dataType == "users":
+		if subDataID != None:
+			return DB.ListGroupedUsers(subDataID)
+		else:
+			return DB.ListUsers()
