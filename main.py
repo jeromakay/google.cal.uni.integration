@@ -5,6 +5,7 @@ from google.appengine.api import users
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.ext.webapp import template
+from uccal import data
 
 #--Begin Page Display Handlers---#
 class Main(webapp.RequestHandler):
@@ -157,6 +158,28 @@ class ModuleUpdaterAjax(webapp.RequestHandler):
 			self.response.out.write('ok')
 		except Exception, e:
 			self.response.out.write(e)
+
+class Login(webapp.RequestHandler):
+    def post(self):
+        self.response.headers['Content-Type'] = 'text/plain'
+        username = self.request.get('username')
+        password = self.request.get('password')
+        config=open('login.config')
+        proper_username=data.ADMIN_EMAIL
+        proper_password=data.ADMIN_PASSWORD
+        if username != proper_username:
+            self.response.out.write('incorrect username.')
+        elif password != proper_password:
+            self.response.out.write('incorrect password')
+        else:
+            try :
+                self.response.out.write('ok')
+            except Exception, e:
+                self.response.out.write(e)
+        
+    def get(self):
+        #todo, load the html template for login form
+        TemplateMaker.make( self, "Login", "root/login" )
 	
 #------------------End modules input Handlers--------------#
 class Test(webapp.RequestHandler):
@@ -195,7 +218,7 @@ application = webapp.WSGIApplication(
 									#methods to deal with input
 									  ('/DeleterAjax', DeleterAjax),
 									  ('/fetchers', FetchersAjax),
-									#
+									  ('/login', Login),
                                       ('/addGroupAjax', GroupAdderAjax),
 									  ('/updateGroupAjax', GroupUpdaterAjax),
                                       ('/groupManagerAjax', GroupManagerAjax),
