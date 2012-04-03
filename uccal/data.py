@@ -1,13 +1,17 @@
 #list of necessary imports for our program
 
-SOURCE_APP_NAME = 'addcaltwj3'
+SOURCE_APP_NAME = ''
 
-CONSUMER_KEY = 'jeromakay.com'
+CONSUMER_KEY = ''
 
-CONSUMER_SECRET = '4F9NldoELocv9RWI0esKSqMv'
+CONSUMER_SECRET = ''
 
-ADMIN_ID = 'twj3' 
+ADMIN_ID = '' 
+
+ADMIN_PASSWORD = ''
+
+##################################################
+#no changes needed here
+##################################################
 
 ADMIN_EMAIL = ADMIN_ID + '@' + CONSUMER_KEY
-
-ADMIN_PASSWORD = 'twj3305ucc'
